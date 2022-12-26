@@ -20,5 +20,5 @@ docker build . -t vistaweb-backend
 ```
 ### run docker
 ```
-docker run -p 4000:8080 -d vistaweb-backend
+docker run -p 8181:8181 -d vistaweb-backend
 ```
