@@ -16,9 +16,9 @@ node app.js
 ## run with docker
 ### build docker
 ```
-docker build . -t vistaweb-backend
+docker build . -t vistaweb-backend:v1
 ```
 ### run docker
 ```
-docker run -p 8181:8181 -d vistaweb-backend
+docker run --restart=unless-stopped -p 8181:8181 --name back --link vistasql:db -d vistaweb-backend:v1
 ```
