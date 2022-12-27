@@ -61,7 +61,7 @@ exports.login = (req, res) => {
       expiresIn: config.expiresIn,
     })
 
-    res.cookie("token",'vista ' + tokenStr,{maxAge:24*60*60*1000,httpOnly:true});
+    res.cookie("token",'vista ' + tokenStr,{maxAge:config.cookieage,httpOnly:true});
 
     res.send({
       status: 0,
