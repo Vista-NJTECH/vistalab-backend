@@ -1,7 +1,7 @@
 // 导入数据库操作模块
 const db = require('../db/index')
 
-exports.allschedules = (req, res) => {
+exports.getall = (req, res) => {
     const sql = `select * from schedule_info`
     db.query(sql, (err, results) => {
         if (err) return res.cc(err)
@@ -36,6 +36,4 @@ exports.add = (req, res) => {
 
     return res.cc('添加日程成功！', 0)
     })
-
-
 }

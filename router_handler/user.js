@@ -72,22 +72,6 @@ exports.login = (req, res) => {
   
 }
 
-exports.allmembers = (req, res) => {
-  const userinfo = req.body
-  const sql = `select * from member_info`
-  db.query(sql, userinfo.username, function (err, results) {
-
-    if (err) return res.cc(err)
-
-    res.send({
-      status: 0,
-      data: results,
-    })
-
-  })
-  
-}
-
 exports.allinvoice = (req, res) => {
   const userinfo = req.body
   const sql = `select * from invoice_info`

@@ -31,8 +31,8 @@ app.use(function (req, res, next) {
   next()
 })
 
-// token中间件过滤
-app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//],algorithms:['HS256'] }))
+// token中间件过滤-弃用
+//app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//],algorithms:['HS256'] }))
 
 ////////////////////////////////////////////////////////////////////
 // 路由
@@ -42,8 +42,11 @@ app.use('/api', user_router)
 const userinfo_router = require('./router/userinfo')
 app.use('/my', userinfo_router)
 
-const scheduleinfo_router = require('./router/schedule')
-app.use('/api', scheduleinfo_router)
+const scheduleinfo_router = require('./router/scheduleinfo')
+app.use('/schedule', scheduleinfo_router)
+
+const memberinfo_router = require('./router/memberinfo')
+app.use('/member', memberinfo_router)
 
 ////////////////////////////////////////////////////////////////////
 

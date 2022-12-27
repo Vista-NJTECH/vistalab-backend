@@ -2,9 +2,9 @@ const express = require('express')
 const router = express.Router()
 
 // 导入用户路由处理函数模块
-const scheduleHandler = require('../router_handler/schedule')
+const scheduleHandler = require('../router_handler/scheduleinfo')
 
-router.get('/getall', scheduleHandler.allschedules)
+router.get('/getall', scheduleHandler.getall)
 
 router.post('/add', scheduleHandler.add)
 
