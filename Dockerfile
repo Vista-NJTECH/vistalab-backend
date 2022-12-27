@@ -1,4 +1,4 @@
-FROM node:18.12
+FROM node:18-alpine
 
 # 程序路径
 WORKDIR /usr/src/app

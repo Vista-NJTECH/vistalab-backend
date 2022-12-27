@@ -13,6 +13,8 @@ router.post('/register', expressJoi(reg_login_schema), userHandler.register)
 // 登录
 router.post('/login', expressJoi(reg_login_schema), userHandler.login)
 
-router.post('/member', userHandler.allmembers)
+router.get('/member', userHandler.allmembers)
+
+router.get('/allinvoice', userHandler.allinvoice)
 
 module.exports = router

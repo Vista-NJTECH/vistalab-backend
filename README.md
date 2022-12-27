@@ -20,5 +20,5 @@ docker build . -t vistaweb-backend:v1
 ```
 ### run docker
 ```
-docker run --restart=unless-stopped -p 8181:8181 --name back --link vistasql:db -d vistaweb-backend:v1
+docker run --restart=unless-stopped -p 8181:8181 --name back --link vistasql:localhost -d vistaweb-backend:v1
 ```
