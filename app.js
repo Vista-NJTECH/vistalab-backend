@@ -2,6 +2,10 @@
 const express = require('express')
 const app = express()
 
+// cookie
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 //解析表单中间件
 app.use(express.urlencoded({extended: false}))
 
@@ -37,6 +41,9 @@ app.use('/api', user_router)
 
 const userinfo_router = require('./router/userinfo')
 app.use('/my', userinfo_router)
+
+const scheduleinfo_router = require('./router/schedule')
+app.use('/api', scheduleinfo_router)
 
 ////////////////////////////////////////////////////////////////////
 

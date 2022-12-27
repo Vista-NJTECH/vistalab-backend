@@ -9,11 +9,6 @@ const db = require('../db/index')
 exports.register = (req, res) => {
   const userinfo = req.body
   
-  if (!userinfo.username || !userinfo.password) {
-    return res.cc('用户名或密码不能为空！')
-  }
-
-
   const sql = `select * from user_info where username=?`
   db.query(sql, [userinfo.username], function (err, results) {
     // 执行 SQL 语句失败
@@ -66,10 +61,11 @@ exports.login = (req, res) => {
       expiresIn: config.expiresIn,
     })
 
+    res.cookie("token",'vista ' + tokenStr,{maxAge:24*60*60*1000,httpOnly:true});
+
     res.send({
       status: 0,
-      message: '登录成功！',
-      token: 'vista ' + tokenStr,
+      message: '登录成功！'
     })
 
   })
