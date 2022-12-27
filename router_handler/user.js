@@ -61,11 +61,12 @@ exports.login = (req, res) => {
       expiresIn: config.expiresIn,
     })
 
-    res.cookie("token",'vista ' + tokenStr,{maxAge:config.cookieage,httpOnly:true});
+    //res.cookie("token",'vista ' + tokenStr,{maxAge:config.cookieage,httpOnly:true});
 
     res.send({
       status: 0,
-      message: '登录成功！'
+      message: '登录成功！',
+      token: 'vista ' + tokenStr,
     })
 
   })
