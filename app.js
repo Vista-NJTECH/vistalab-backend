@@ -31,8 +31,10 @@ app.use(function (req, res, next) {
   next()
 })
 
+/**********************************
 // token中间件过滤-弃用
 //app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//],algorithms:['HS256'] }))
+***********************************/
 
 ////////////////////////////////////////////////////////////////////
 // 路由

@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken')
 const config = require('../config')
 const db = require('../db/index')
 
-
 exports.register = (req, res) => {
   const userinfo = req.body
   
