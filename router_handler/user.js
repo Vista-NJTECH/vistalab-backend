@@ -54,7 +54,7 @@ exports.login = (req, res) => {
       return res.cc('登录失败！')
     }
 
-    const user = { ...results[0], password: '', userpic: '', name: "", email: "", created_time: "" }
+    const user = { ...results[0], password: '', userpic: '', name: "", email: "", level: "",created_time: "" }
 
     const tokenStr = jwt.sign(user, config.jwtSecretKey, {
       expiresIn: config.expiresIn,

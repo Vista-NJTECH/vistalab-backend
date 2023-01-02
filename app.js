@@ -1,13 +1,11 @@
 // 实例化服务器
 const express = require('express')
 const app = express()
+const path = require('path')
 
 // cookie
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
-
-//解析表单中间件
-app.use(express.urlencoded({extended: false}))
 
 // 跨域配置
 const cors = require('cors')
@@ -38,6 +36,17 @@ app.use(function (req, res, next) {
 
 ////////////////////////////////////////////////////////////////////
 // 路由
+
+//解析表单中间件
+app.use(express.urlencoded({extended: false}))
+
+// 托管静态资源文件
+app.use(express.static(path.join(__dirname,'public')));
+
+/////////////
+const studyinfo_router = require('./router/studyinfo')
+app.use('/study', studyinfo_router)
+
 const user_router = require('./router/user')
 app.use('/api', user_router)
 
@@ -49,6 +58,7 @@ app.use('/schedule', scheduleinfo_router)
 
 const memberinfo_router = require('./router/memberinfo')
 app.use('/member', memberinfo_router)
+
 
 ////////////////////////////////////////////////////////////////////
 
