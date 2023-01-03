@@ -3,6 +3,7 @@ const multer  = require('multer')
 const fs = require('fs')
 
 
+
 //管理员头像上传路由处理函数
 const storage = multer.diskStorage({
   //存储的位置 uploads在根目录下
@@ -20,10 +21,11 @@ const storage = multer.diskStorage({
 //管理员头像上传路由
 const upload = multer({storage})
   
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
 
-  const sqly = `select * from img_info where id=?`
-  db.query(sqly, req.body.id, function(err, results) {
+  const sqly = `select * from img_info, study_info where (img_info.id = study_info.img_id and study_info.id = ?)`
+  await db.query(sqly, req.body.id, function(err, results) {
+    //console.log(results[0])
     if (err) return err
     if(!results[0]) return -1
     fs.unlink(results[0].path,function(error){
@@ -31,36 +33,35 @@ exports.delete = (req, res) => {
           console.log(error);
           return false;
       }
-      console.log('删除文件成功');
-    })
+      //////////////////////////////////////////// 不管同步异步了，我直接嵌套
+      const sql = `delete from img_info WHERE id=?`
+      db.query(sql, [results[0].img_id],function(err, results1) {
 
-  })
+        if (err) return res.cc(err)
 
-  const sql = `delete from img_info WHERE id=?`
-  db.query(sql, [req.body.id],function(err, results) {
+        const sql = `delete from study_info WHERE id=?`
+        db.query(sql, [req.body.id],function(err, results2) {
+          if (err) return res.cc(err)
+      
+          res.send({
+            status: 0,
+            msg: "success",
+          })
+      
+        })
 
-    if (err) return res.cc(err)
-
-    const sql = `delete from study_info WHERE img_id=?`
-    db.query(sql, [req.body.id],function(err, results) {
-  
-      if (err) return res.cc(err)
-  
-      res.send({
-        status: 0,
-        msg: results,
       })
-  
+  ////////////////////////////////////////////
+      return "success";
     })
 
   })
+  
 }
 
 exports.getall = (req, res) => {
   var sql = `select * from img_info, study_info where (img_info.id = study_info.img_id and study_info.classification = ?)`
-  console.log("req.query.class : " + req.query.class)
   if(!(req.query.subclass === undefined)){
-    console.log('req.query.subclass : ' + req.query.subclass)
     sql = `select * from img_info, study_info where (img_info.id = study_info.img_id and study_info.classification = ? and study_info.coursename = ?)`
   }
   if(JSON.stringify(req.query) == '{}'){
@@ -93,7 +94,8 @@ exports.getcategory = (req, res) => {
 }
 
 exports.add = async (req, res) => {
-  let {size,mimetype,path}=req.file;
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    let {size,mimetype,path}=req.file;
     let types=['jpeg','jpg','png','gif'];//允许上传的类型
     let tmpType=mimetype.split('/')[1];
     if(size>5000000){
@@ -106,7 +108,6 @@ exports.add = async (req, res) => {
     // 获取图片信息
     var sizeOf = require('image-size');
     const Jimp = require('jimp');
-    // crop( x, y, w, h)
     async function imgpro() {
       // 读取图片
       const image = await Jimp.read(req.file.path);
@@ -114,11 +115,39 @@ exports.add = async (req, res) => {
       await image.writeAsync(req.file.path);
     }
     await imgpro()
+
+    const {encode, decode} = require('blurhash')
+    const sharp = require('sharp')
+
+    const {data, info} = await sharp(req.file.path)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({
+      resolveWithObject: true
+    });
+    const blurl = encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4)
+    const decoded = decode(blurl, info.width, info.height)
+    
+    const image = await sharp(Buffer.from(decoded), {
+      raw:{
+        channels: 4,
+        width: info.width, 
+        height: info.height
+      }
+    }).jpeg({
+      overshootDeringing: true,
+      quality: 40,
+    }).toBuffer()
+
+    var base64url = `data:image/png;base64,${image.toString('base64')}`
+    //console.log(base64url);
     sizeOf(req.file.path, function (err, dimensions) {
       const sql = 'insert into img_info set ?'
       db.query(sql, { 
         path: req.file.path, 
-        size: req.file.size, 
+        size: req.file.size,
+        blur: blurl,
+        base64: base64url,
         width: dimensions.width, 
         height: dimensions.height}, function (err, results) {
           if (err){

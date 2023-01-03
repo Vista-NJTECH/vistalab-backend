@@ -37,3 +37,15 @@ exports.add = (req, res) => {
     return res.cc('添加日程成功！', 0)
     })
 }
+
+exports.delete = (req, res) => {
+    const sql = `delete from schedule_info WHERE id=?`
+    db.query(sql, [req.body.id],function(err, results2) {
+      if (err) return res.cc(err)
+  
+      res.send({
+        status: 0,
+        msg: "success",
+      })
+    })
+}

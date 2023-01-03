@@ -1,12 +1,14 @@
-FROM node:18-alpine
+FROM node:18.12.1
 
 # 程序路径
 WORKDIR /usr/src/app
 
 COPY package.json ./
-RUN npm install
+#RUN npm install
 
-RUN npm install -g npm@9.2.0
+RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
+
+RUN cnpm install
 
 COPY . .
 

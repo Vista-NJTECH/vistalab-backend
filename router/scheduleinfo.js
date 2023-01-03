@@ -6,6 +6,8 @@ const scheduleHandler = require('../router_handler/scheduleinfo')
 
 router.get('/getall', scheduleHandler.getall)
 
+router.get('/delete', scheduleHandler.delete)
+
 router.post('/add', scheduleHandler.add)
 
 module.exports = router
