@@ -25,6 +25,10 @@ const studyinfoHandler = require('../router_handler/studyinfo')
 
 router.get('/getall', studyinfoHandler.getall)
 
+router.get('/getcategory', studyinfoHandler.getcategory)
+
 router.post('/add', upload.single('studyimg'), studyinfoHandler.add)
+
+router.post('/delete', studyinfoHandler.delete)
 
 module.exports = router
