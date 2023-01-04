@@ -19,7 +19,6 @@ const password = joi
 
   const Invitation_code = joi
   .string()
-  .required()
 
 // 注册和登录表单的验证规则对象
 exports.reg_login_schema = {
