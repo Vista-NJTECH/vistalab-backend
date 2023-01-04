@@ -1,7 +1,7 @@
 const db = require('../db/index')
 const multer  = require('multer')
 const fs = require('fs')
-
+const config = require('../config')
 
 
 const storage = multer.diskStorage({
@@ -81,36 +81,36 @@ exports.getcategory = (req, res) => {
 }
 
 exports.add = async (req, res) => {
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    let {size,mimetype,path}=req.file;
-    let types=['jpeg','jpg','png','gif'];//允许上传的类型
-    let tmpType=mimetype.split('/')[1];
-    if(size>5000000){
-        return res.cc('上传的内容不能超过5000000')
-    }else if(types.indexOf(tmpType)==-1){
-      fs.unlink(req.file.path,function(error){
-        if(error){
-          return res.cc(error)
-        }
-      })
-        return res.cc('上传的类型错误')
-    }else{
-    var appendName=req.file.originalname
+  if(!req.file) res.cc('No file data!')
+  let {size,mimetype,path}=req.file;
+  let types=['jpeg','jpg','png','gif'];
+  let tmpType=mimetype.split('/')[1];
+  if(size > config.imgLimit.maxSize){
+      return res.cc('上传的内容不能超过' + config.imgLimit.maxSize)
+  }else if(types.indexOf(tmpType)==-1){
+    fs.unlink(req.file.path,function(error){
+      if(error){
+        return res.cc(error)
+      }
+    })
+      return res.cc('上传的类型错误')
+  }else{
+  var appendName=req.file.originalname
 
-    // 获取图片信息
-    var sizeOf = require('image-size');
-    const Jimp = require('jimp');
-    async function imgpro() {
-      // 读取图片
-      const image = await Jimp.read(req.file.path);
-      await image.resize(Jimp.AUTO, 720);
-      await image.writeAsync(req.file.path);
-    }
-    await imgpro()
+  // 获取图片信息
+  var sizeOf = require('image-size');
+  const Jimp = require('jimp');
+  async function imgpro() {
+    // 读取图片
+    const image = await Jimp.read(req.file.path);
+    await image.resize(Jimp.AUTO, 720);
+    await image.writeAsync(req.file.path);
+  }
+  await imgpro()
 
+  if(config.imgLimit.uesBlur){
     const {encode, decode} = require('blurhash')
     const sharp = require('sharp')
-
     const {data, info} = await sharp(req.file.path)
     .ensureAlpha()
     .raw()
@@ -133,42 +133,48 @@ exports.add = async (req, res) => {
 
     var base64url = `data:image/png;base64,${image.toString('base64')}`
     //console.log(base64url);
-    sizeOf(req.file.path, function (err, dimensions) {
-      const sql = 'insert into img_info set ?'
-      db.query(sql, { 
-        path: req.file.path, 
-        size: req.file.size,
-        blur: blurl,
-        base64: base64url,
-        width: dimensions.width, 
-        height: dimensions.height}, function (err, results) {
-          if (err){
-            return res.cc(err)
-          } 
-          if (results.affectedRows !== 1) {
-            return res.cc("插入数据库img_info失败！")
-          }
-          const sql = `select id from img_info where path = ?`
-          db.query(sql, [req.file.path], function(err, results) {
-              if (err) return res.cc(err)
-              const sql = 'insert into study_info set ?'
-              db.query(sql, { 
-                link: req.body.link, 
-                classification: req.body.classification, 
-                coursename: req.body.coursename, 
-                title: req.body.title, 
-                img_id: results[0].id}, function (err, results) {
-                  if (err){
-                    return res.cc(err)
-                  } 
-                  if (results.affectedRows !== 1) {
-                    return res.cc("插入数据库study_info失败！")
-                  }
-                  return res.cc('上传成功！', true)
-             })
-          
-        })
-          return 1
+  }else{
+    const blurl = ""
+    const base64url = ""
+  }
+  
+  
+  sizeOf(req.file.path, function (err, dimensions) {
+    const sql = 'insert into img_info set ?'
+    db.query(sql, { 
+      path: req.file.path, 
+      size: req.file.size,
+      blur: blurl,
+      base64: base64url,
+      width: dimensions.width, 
+      height: dimensions.height}, function (err, results) {
+        if (err){
+          return res.cc(err)
+        } 
+        if (results.affectedRows !== 1) {
+          return res.cc("插入数据库img_info失败！")
+        }
+        const sql = `select id from img_info where path = ?`
+        db.query(sql, [req.file.path], function(err, results) {
+            if (err) return res.cc(err)
+            const sql = 'insert into study_info set ?'
+            db.query(sql, { 
+              link: req.body.link, 
+              classification: req.body.classification, 
+              coursename: req.body.coursename, 
+              title: req.body.title, 
+              img_id: results[0].id}, function (err, results) {
+                if (err){
+                  return res.cc(err)
+                } 
+                if (results.affectedRows !== 1) {
+                  return res.cc("插入数据库study_info失败！")
+                }
+                return res.cc('上传成功！', true)
+            })
+        
+      })
+        return 1
     })
 
     });

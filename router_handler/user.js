@@ -7,7 +7,7 @@ const db = require('../db/index')
 
 exports.register = (req, res) => {
   const userinfo = req.body
-  if(userinfo.invitecode != "vistalab666") return res.cc("Invite Code Error!")
+  if(userinfo.Invitation_code != config.invitation_code) return res.cc("Invitation Code Error!")
   const sql = `select * from user_info where username=?`
   db.query(sql, [userinfo.username], function (err, results) {
     // 执行 SQL 语句失败

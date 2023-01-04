@@ -75,6 +75,6 @@ app.use(function (err, req, res, next) {
 
 ////////////////////////////////////////////////////////////////////
 
-app.listen(8181, function () {
+app.listen(config.deploy.port, function () {
   console.log('api server running at http://127.0.0.1:8181')
 })
