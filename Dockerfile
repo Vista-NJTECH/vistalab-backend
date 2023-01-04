@@ -1,4 +1,4 @@
-FROM node:18.12.1
+FROM node:18.12-slim
 
 # 程序路径
 WORKDIR /usr/src/app

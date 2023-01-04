@@ -31,7 +31,7 @@ exports.register = (req, res) => {
         return res.cc('注册用户失败，请稍后再试！')
       }
 
-      return res.cc('注册成功！', 0)
+      return res.cc('注册成功！', "true")
     })
 
   })

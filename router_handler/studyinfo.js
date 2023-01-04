@@ -4,21 +4,17 @@ const fs = require('fs')
 
 
 
-//管理员头像上传路由处理函数
 const storage = multer.diskStorage({
-  //存储的位置 uploads在根目录下
   destination(req, file, cb){
       cb(null, 'uploads/')
     
   },
-  //图片名字的确定 multer默认帮我们取一个没有扩展名的图片名，因此需要我们自己定义给图片命名
   filename(req, file, cb){
-    // console.log(file)  
     cb(null, 'img' + file.originalname)
       
   }
 })
-//管理员头像上传路由
+
 const upload = multer({storage})
   
 exports.delete = async (req, res) => {
@@ -26,33 +22,24 @@ exports.delete = async (req, res) => {
   const sqly = `select * from img_info, study_info where (img_info.id = study_info.img_id and study_info.id = ?)`
   await db.query(sqly, req.body.id, function(err, results) {
     //console.log(results[0])
-    if (err) return err
-    if(!results[0]) return -1
+    if (err) return res.cc(err)
+    if(!results[0]) return res.cc("没有可删除记录")
     fs.unlink(results[0].path,function(error){
       if(error){
-          console.log(error);
-          return false;
+        return res.cc(error)
       }
       //////////////////////////////////////////// 不管同步异步了，我直接嵌套
       const sql = `delete from img_info WHERE id=?`
       db.query(sql, [results[0].img_id],function(err, results1) {
-
         if (err) return res.cc(err)
-
         const sql = `delete from study_info WHERE id=?`
         db.query(sql, [req.body.id],function(err, results2) {
           if (err) return res.cc(err)
-      
-          res.send({
-            status: 0,
-            msg: "success",
-          })
-      
+          return res.cc('删除成功！', "true")
         })
 
       })
   ////////////////////////////////////////////
-      return "success";
     })
 
   })
@@ -70,7 +57,7 @@ exports.getall = (req, res) => {
   db.query(sql, [req.query.class, req.query.subclass], function(err, results) {
     if (err) return res.cc(err)
     res.send({
-      status: 0,
+      status: "true",
       data: results,
       prefix: "http://124.223.196.177:8182/"
     })
@@ -86,7 +73,7 @@ exports.getcategory = (req, res) => {
   db.query(sql, [req.query.class], function(err, results) {
     if (err) return res.cc(err)
     res.send({
-      status: 0,
+      status: "true",
       data: results,
     })
 
@@ -99,9 +86,9 @@ exports.add = async (req, res) => {
     let types=['jpeg','jpg','png','gif'];//允许上传的类型
     let tmpType=mimetype.split('/')[1];
     if(size>5000000){
-        return res.send({err:-1,msg:'上传的内容不能超过5000000'})
+        return res.cc('上传的内容不能超过5000000')
     }else if(types.indexOf(tmpType)==-1){
-        return res.send({err:-2,msg:'上传的类型错误'})
+        return res.cc('上传的类型错误')
     }else{
     var appendName=req.file.originalname
 
@@ -151,11 +138,10 @@ exports.add = async (req, res) => {
         width: dimensions.width, 
         height: dimensions.height}, function (err, results) {
           if (err){
-            console.log(err)
-            return err
+            return res.cc(err)
           } 
           if (results.affectedRows !== 1) {
-            return -1
+            return res.cc("插入数据库img_info失败！")
           }
           const sql = `select id from img_info where path = ?`
           db.query(sql, [req.file.path], function(err, results) {
@@ -168,13 +154,12 @@ exports.add = async (req, res) => {
                 title: req.body.title, 
                 img_id: results[0].id}, function (err, results) {
                   if (err){
-                    console.log(err)
-                    return err
+                    return res.cc(err)
                   } 
                   if (results.affectedRows !== 1) {
-                    return -1
+                    return res.cc("插入数据库study_info失败！")
                   }
-
+                  return res.cc('上传成功！', "true")
              })
           
         })
@@ -186,9 +171,5 @@ exports.add = async (req, res) => {
     fs.rename(req.file.path, `/uploads/${req.file.filename}.${appendName}`, function(err) {
       if(err) return err
     })
-      const url = `http://124.223.196.177:8182/${req.file.path}`
-      res.send({
-        url:url
-      })
   }
 }
