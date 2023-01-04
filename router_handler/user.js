@@ -7,7 +7,7 @@ const db = require('../db/index')
 
 exports.register = (req, res) => {
   const userinfo = req.body
-  
+  if(userinfo.invitecode != "vistalab666") return res.cc("Invite Code Error!")
   const sql = `select * from user_info where username=?`
   db.query(sql, [userinfo.username], function (err, results) {
     // 执行 SQL 语句失败
@@ -31,7 +31,7 @@ exports.register = (req, res) => {
         return res.cc('注册用户失败，请稍后再试！')
       }
 
-      return res.cc('注册成功！', "true")
+      return res.cc('注册成功！', true)
     })
 
   })

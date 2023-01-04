@@ -35,7 +35,7 @@ exports.delete = async (req, res) => {
         const sql = `delete from study_info WHERE id=?`
         db.query(sql, [req.body.id],function(err, results2) {
           if (err) return res.cc(err)
-          return res.cc('删除成功！', "true")
+          return res.cc('删除成功！', true)
         })
 
       })
@@ -57,7 +57,7 @@ exports.getall = (req, res) => {
   db.query(sql, [req.query.class, req.query.subclass], function(err, results) {
     if (err) return res.cc(err)
     res.send({
-      status: "true",
+      status: true,
       data: results,
       prefix: "http://124.223.196.177:8182/"
     })
@@ -73,7 +73,7 @@ exports.getcategory = (req, res) => {
   db.query(sql, [req.query.class], function(err, results) {
     if (err) return res.cc(err)
     res.send({
-      status: "true",
+      status: true,
       data: results,
     })
 
@@ -88,6 +88,11 @@ exports.add = async (req, res) => {
     if(size>5000000){
         return res.cc('上传的内容不能超过5000000')
     }else if(types.indexOf(tmpType)==-1){
+      fs.unlink(req.file.path,function(error){
+        if(error){
+          return res.cc(error)
+        }
+      })
         return res.cc('上传的类型错误')
     }else{
     var appendName=req.file.originalname
@@ -159,7 +164,7 @@ exports.add = async (req, res) => {
                   if (results.affectedRows !== 1) {
                     return res.cc("插入数据库study_info失败！")
                   }
-                  return res.cc('上传成功！', "true")
+                  return res.cc('上传成功！', true)
              })
           
         })

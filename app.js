@@ -19,7 +19,7 @@ const expressJWT = require('express-jwt')
 
 // 中间件全局变量，需在路由前定义
 app.use(function (req, res, next) {
-  res.cc = function (err, status = "false") {
+  res.cc = function (err, status = false) {
     res.send({
       status,
       message: err instanceof Error ? err.message : err,
