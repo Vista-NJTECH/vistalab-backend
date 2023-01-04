@@ -9,10 +9,11 @@ module.exports = {
   
 module.exports.imgLimit = {
   maxSize: 5000000,
-  uesBlur: true
+  uesBlur: true,
 }
 
 module.exports.deploy = {
   port: 8181,
   host: 'db'
 }
+
