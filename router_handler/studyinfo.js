@@ -24,11 +24,6 @@ exports.delete = async (req, res) => {
           return res.cc(error)
         }
       })
-      fs.unlink(results[0].base64,function(error){
-        if(error){
-          return res.cc(error)
-        }
-      })
       //////////////////////////////////////////// 不管同步异步了，我直接嵌套
       const sql = `delete from img_info WHERE id=?`
       db.query(sql, [results[0].img_id],function(err, results1) {
@@ -216,11 +211,6 @@ exports.update = async (req, res) => {
             return res.cc(error)
           }
         })
-        fs.unlink(results[0].base64,function(error){
-          if(error){
-            return res.cc(error)
-          }
-        })
       }
       
       //////////////////////////////////////////// 不管同步异步了，我直接嵌套
@@ -344,7 +334,7 @@ async function saveImg(req){
 
     const savename = req.file.path.split("/")[req.file.path.split("/").length-1]
     
-    await sharp(Buffer.from(decoded), {
+    const image = await sharp(Buffer.from(decoded), {
       raw:{
         channels: 4,
         width: info.width, 
@@ -353,11 +343,12 @@ async function saveImg(req){
     }).png({
       overshootDeringing: true,
       quality: 40,
-    }).toFile(config.imgLimit.base64SavePath + savename)
+    }).toBuffer()
+    //.toFile(config.imgLimit.base64SavePath + savename)
 
-    //var base64url = `data:image/png;base64,${image.toString('base64')}`
+    var base64url = `data:image/png;base64,${image.toString('base64')}`
     //console.log(base64url);
-    var base64url = config.imgLimit.base64SavePath + savename;
+    //var base64url = config.imgLimit.base64SavePath + savename;
 
     return {
       blurl: blurl, 
