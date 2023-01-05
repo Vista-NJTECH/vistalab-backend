@@ -15,4 +15,5 @@ module.exports.studyinfo_schema = joi.object({
     title : joi.string().required(),
     link : joi.string().required(),
     id : joi.string(),
+    tags : joi.string(),
 });

@@ -180,8 +180,10 @@ exports.update = async (req, res) => {
               link: req.body.link, 
               classification: req.body.classification, 
               coursename: req.body.coursename, 
-              title: req.body.title, 
-              img_id: results.insertId}, req.body.id], function (err, results) {
+              title: req.body.title,
+              tags: req.body.tags,
+              img_id: results.insertId
+            }, req.body.id], function (err, results) {
                 if (err){
                   return res.cc(err)
                 } 
@@ -304,8 +306,10 @@ async function addlog(req, res, update = false){
         link: req.body.link, 
         classification: req.body.classification, 
         coursename: req.body.coursename, 
-        title: req.body.title, 
-        img_id: 1}, function (err, results) {
+        title: req.body.title,
+        img_id: 1,
+        tags: req.body.tags,
+      }, function (err, results) {
           if (err){
             return res.cc(err)
           } 
@@ -328,7 +332,8 @@ async function addlog(req, res, update = false){
       blur: imgInfo.blurl,
       base64: imgInfo.base64url,
       width: imgInfo.info.width, 
-      height: imgInfo.info.height}, function (err, results) {
+      height: imgInfo.info.height,
+    }, function (err, results) {
         if (err){
           return res.cc(err)
         } 
@@ -342,7 +347,9 @@ async function addlog(req, res, update = false){
           classification: req.body.classification, 
           coursename: req.body.coursename, 
           title: req.body.title, 
-          img_id: results.insertId}, function (err, results) {
+          img_id: results.insertId,
+          tags: req.body.tags,
+        }, function (err, results) {
             if (err){
               return res.cc(err)
             } 
