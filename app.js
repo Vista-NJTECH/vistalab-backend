@@ -43,11 +43,14 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname,'public')));
 
 /////////////
-const studyinfo_router = require('./router/studyinfo')
-app.use('/study', studyinfo_router)
-
 const user_router = require('./router/user')
 app.use('/api', user_router)
+
+const userinfo_router = require('./router/studyinfo')
+app.use('/my', userinfo_router)
+
+const studyinfo_router = require('./router/studyinfo')
+app.use('/study', studyinfo_router)
 
 const userinfo_router = require('./router/userinfo')
 app.use('/my', userinfo_router)
@@ -60,6 +63,7 @@ app.use('/member', memberinfo_router)
 
 const invoice_router = require('./router/invoice')
 app.use('/invoice', invoice_router)
+
 ////////////////////////////////////////////////////////////////////
 app.use('/apidoc', express.static('apidoc'));
 ////////////////////////////////////////////////////////////////////

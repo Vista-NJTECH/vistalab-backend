@@ -5,7 +5,7 @@ const router = express.Router()
 const scheduleHandler = require('../router_handler/scheduleinfo')
 /**
  * 
- * @api {post} /schedule/getall 日程信息获取
+ * @api {get} /schedule/getall 日程信息获取
  * @apiName  日程信息获取
  * @apiGroup 日程
  * @apiDescription  获取日程信息
