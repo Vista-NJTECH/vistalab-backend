@@ -78,11 +78,13 @@ async function addlog(req, res, update = false){
   try {
     const validation = await studyinfo_schema.validate(req.body)
     if(validation.error){
-      fs.unlink(req.file.path,function(error){
-        if(error){
-          return res.cc(error)
-        }
-      })
+      if(req.file.path){
+        fs.unlink(req.file.path,function(error){
+          if(error){
+            return res.cc(error)
+          }
+        })
+      }
       return res.cc(validation.error)
     }
   } catch (err) {
@@ -90,7 +92,6 @@ async function addlog(req, res, update = false){
   }
   if(!req.file){
     img_path = "public/src/default.png";
-
     const sql = 'insert into study_info set ?'
       db.query(sql, { 
         link: req.body.link, 
@@ -233,7 +234,7 @@ exports.update = async (req, res) => {
       return res.cc("插入数据库study_info失败！")
     }
     return res.cc('更新成功！', true)
-})
+    })
   }else{
     try {
       const validation = await studyinfo_schema.validate(req.body)
@@ -261,127 +262,136 @@ exports.update = async (req, res) => {
         })
         return res.cc("没有可删除记录")
       }
-      fs.unlink(results[0].path,function(error){
-        if(error){
-          return res.cc(error)
-        }
-        //////////////////////////////////////////// 不管同步异步了，我直接嵌套
-        const sql = `delete from img_info WHERE id=?`
-        db.query(sql, [results[0].img_id],async function(err, results1) {
-          if (err) return res.cc(err)
-          
-          //----------------------------------------------------------
-  
-          try {
-            const validation = await studyinfo_schema.validate(req.body)
-            if(validation.error){
-              fs.unlink(req.file.path,function(error){
-                if(error){
-                  return res.cc(error)
-                }
-              })
-              return res.cc(validation.error)
-            }
-          } catch (err) {
-            return res.cc(err)
+
+      if(results[0].img_id == 1){
+        results[0].img_id = 0
+      }
+      else {
+        fs.unlink(results[0].path,function(error){
+          if(error){
+            return res.cc(error)
           }
-          let {size,mimetype,path}=req.file;
-          let types=['jpeg','jpg','png','gif'];
-          let tmpType=mimetype.split('/')[1];
-        
-          //-------------------------------
-          if(size > config.imgLimit.maxSize){
-            fs.unlink(req.file.path,function(error){
-              if(error){
-                return res.cc(error)
-              }
-            })
-            return res.cc('上传的内容不能超过' + config.imgLimit.maxSize)
-          }else if(types.indexOf(tmpType)==-1){
-            fs.unlink(req.file.path,function(error){
-              if(error){
-                return res.cc(error)
-              }
-            })
-              return res.cc('上传的类型错误')
-          }else{
-          // 获取图片信息
-          var sizeOf = require('image-size');
-          const Jimp = require('jimp');
-          async function imgpro() {
-            // 读取图片
-            const image = await Jimp.read(req.file.path);
-            await image.resize(Jimp.AUTO, 720);
-            await image.writeAsync(req.file.path);
-          }
-          await imgpro()
-        
-          const {encode, decode} = require('blurhash')
-          const sharp = require('sharp')
-          const {data, info} = await sharp(req.file.path)
-          .ensureAlpha()
-          .raw()
-          .toBuffer({
-            resolveWithObject: true
-          });
-          const blurl = encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4)
-          const decoded = decode(blurl, info.width, info.height)
-          
-          const image = await sharp(Buffer.from(decoded), {
-            raw:{
-              channels: 4,
-              width: info.width, 
-              height: info.height
-            }
-          }).jpeg({
-            overshootDeringing: true,
-            quality: 40,
-          }).toBuffer()
-        
-          var base64url = `data:image/png;base64,${image.toString('base64')}`
-          //console.log(base64url);
-          
-          
-          sizeOf(req.file.path, function (err, dimensions) {
-            const sql = 'insert into img_info set ?'
-            db.query(sql, { 
-              path: req.file.path, 
-              size: req.file.size,
-              blur: blurl,
-              base64: base64url,
-              width: dimensions.width, 
-              height: dimensions.height}, function (err, results) {
-                if (err){
-                  return res.cc(err)
-                } 
-                if (results.affectedRows !== 1) {
-                  return res.cc("插入数据库img_info失败！")
-                }
-                if (err) return res.cc(err)
-                const sql = `UPDATE study_info SET ? WHERE id = ?`
-                db.query(sql, [{ 
-                  link: req.body.link, 
-                  classification: req.body.classification, 
-                  coursename: req.body.coursename, 
-                  title: req.body.title, 
-                  img_id: results.insertId}, req.body.id], function (err, results) {
-                    if (err){
-                      return res.cc(err)
-                    } 
-                    if (results.affectedRows !== 1) {
-                      return res.cc("插入数据库study_info失败！")
-                    }
-                    return res.cc('更新成功！', true)
-                })
-            })
-            });
-          }
-          
-          //----------------------------------------------------------
-  
         })
-    ////////////////////////////////////////////
+      }
+      
+      //////////////////////////////////////////// 不管同步异步了，我直接嵌套
+
+      const sql = `delete from img_info WHERE id=?`
+      
+      db.query(sql, [results[0].img_id],async function(err, results1) {
+        if (err) return res.cc(err)
+        
+        //----------------------------------------------------------
+
+        try {
+          const validation = await studyinfo_schema.validate(req.body)
+          if(validation.error){
+            fs.unlink(req.file.path,function(error){
+              if(error){
+                return res.cc(error)
+              }
+            })
+            return res.cc(validation.error)
+          }
+        } catch (err) {
+          return res.cc(err)
+        }
+        let {size,mimetype,path}=req.file;
+        let types=['jpeg','jpg','png','gif'];
+        let tmpType=mimetype.split('/')[1];
+      
+        //-------------------------------
+        if(size > config.imgLimit.maxSize){
+          fs.unlink(req.file.path,function(error){
+            if(error){
+              return res.cc(error)
+            }
+          })
+          return res.cc('上传的内容不能超过' + config.imgLimit.maxSize)
+        }else if(types.indexOf(tmpType)==-1){
+          fs.unlink(req.file.path,function(error){
+            if(error){
+              return res.cc(error)
+            }
+          })
+            return res.cc('上传的类型错误')
+        }else{
+        // 获取图片信息
+        var sizeOf = require('image-size');
+        const Jimp = require('jimp');
+        async function imgpro() {
+          // 读取图片
+          const image = await Jimp.read(req.file.path);
+          await image.resize(Jimp.AUTO, 720);
+          await image.writeAsync(req.file.path);
+        }
+        await imgpro()
+      
+        const {encode, decode} = require('blurhash')
+        const sharp = require('sharp')
+        const {data, info} = await sharp(req.file.path)
+        .ensureAlpha()
+        .raw()
+        .toBuffer({
+          resolveWithObject: true
+        });
+        const blurl = encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4)
+        const decoded = decode(blurl, info.width, info.height)
+        
+        const image = await sharp(Buffer.from(decoded), {
+          raw:{
+            channels: 4,
+            width: info.width, 
+            height: info.height
+          }
+        }).jpeg({
+          overshootDeringing: true,
+          quality: 40,
+        }).toBuffer()
+      
+        var base64url = `data:image/png;base64,${image.toString('base64')}`
+        //console.log(base64url);
+        
+        
+        sizeOf(req.file.path, function (err, dimensions) {
+          const sql = 'insert into img_info set ?'
+          db.query(sql, { 
+            path: req.file.path, 
+            size: req.file.size,
+            blur: blurl,
+            base64: base64url,
+            width: dimensions.width, 
+            height: dimensions.height}, function (err, results) {
+              if (err){
+                return res.cc(err)
+              } 
+              if (results.affectedRows !== 1) {
+                return res.cc("插入数据库img_info失败！")
+              }
+              if (err) return res.cc(err)
+              const sql = `UPDATE study_info SET ? WHERE id = ?`
+              db.query(sql, [{ 
+                link: req.body.link, 
+                classification: req.body.classification, 
+                coursename: req.body.coursename, 
+                title: req.body.title, 
+                img_id: results.insertId}, req.body.id], function (err, results) {
+                  if (err){
+                    return res.cc(err)
+                  } 
+                  if (results.affectedRows !== 1) {
+                    return res.cc("插入数据库study_info失败！")
+                  }
+                  return res.cc('更新成功！', true)
+              })
+          })
+          });
+        }
+        
+        //----------------------------------------------------------
+
       })
+  ////////////////////////////////////////////
     })  
   }
   

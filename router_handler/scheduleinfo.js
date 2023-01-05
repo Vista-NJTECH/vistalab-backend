@@ -5,11 +5,9 @@ exports.getall = (req, res) => {
     const sql = `select * from schedule_info`
     db.query(sql, (err, results) => {
         if (err) return res.cc(err)
-      
-        if (results.length !== 1) return res.cc('获取信息失败！')
-      
+        if (results.length == 0) return res.cc('获取信息失败！')
         res.send({
-          status: 0,
+          status: true,
           message: 'success',
           data: results,
         })
@@ -26,7 +24,8 @@ exports.add = (req, res) => {
         host: scheduleIns.host,
         persons: scheduleIns.persons,
         detail: scheduleIns.detail,
-        level: scheduleIns.level }, function (err, results) {
+        level: scheduleIns.level,
+        p_group: scheduleIns.p_group,}, function (err, results) {
 
     if (err) return res.cc(err)
 
@@ -34,7 +33,7 @@ exports.add = (req, res) => {
         return res.cc('添加日程失败，请稍后再试！')
     }
 
-    return res.cc('添加日程成功！', 0)
+    return res.cc('添加日程成功！', true)
     })
 }
 
@@ -43,9 +42,6 @@ exports.delete = (req, res) => {
     db.query(sql, [req.body.id],function(err, results2) {
       if (err) return res.cc(err)
   
-      res.send({
-        status: 0,
-        msg: "success",
-      })
+      return res.cc('success', true)
     })
 }
