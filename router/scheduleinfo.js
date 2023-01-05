@@ -66,8 +66,9 @@ router.post('/delete', scheduleHandler.delete)
  * @apiBody {String}    host   主持人
  * @apiBody {String}    persons   参与人员
  * @apiBody {String}    details   详情
- * @apiBody {String}    level   等级
- * @apiBody {String}    group   权限用户组默认all
+ * @apiBody {String}    [level]   等级
+ * @apiBody {String}    [group]   权限用户组默认all
+ * @apiBody {String}    [state]   状态
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
@@ -92,8 +93,9 @@ router.post('/add', scheduleHandler.add)
  * @apiBody {String}    host   主持人
  * @apiBody {String}    persons   参与人员
  * @apiBody {String}    details   详情
- * @apiBody {String}    level   等级
- * @apiBody {String}    group   权限用户组默认all
+ * @apiBody {String}    [level]   等级
+ * @apiBody {String}    [group]   权限用户组默认all
+ * @apiBody {String}    [state]   状态
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:

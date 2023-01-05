@@ -16,7 +16,6 @@ const storage = multer.diskStorage({
     }
   })
 const upload = multer({storage})
-
 /**
  * 
  * @api {post} /invoice/add 发票添加
@@ -25,8 +24,9 @@ const upload = multer({storage})
  * @apiDescription  添加发票
  * @apiVersion  1.0.0
  * 
+ * @apiHeader {String} Authorization token
+ * 
  * @apiBody {File} pdfile       你的发票
- * @apiBody {String} applicant  申请人
  * @apiBody {String} remark     备注信息
  * @apiBody {String} category   分类
  * 
@@ -50,6 +50,7 @@ router.post('/add', upload.single('pdfile'), invoiceHandler.add)
  * @apiDescription  获取发票信息
  * @apiVersion  1.0.0
  * 
+ * @apiHeader {String} Authorization token
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
@@ -72,5 +73,26 @@ router.post('/add', upload.single('pdfile'), invoiceHandler.add)
  * 
  */
 router.get('/getall', invoiceHandler.getall)
-
+/**
+ * 
+ * @api {post} /invoice/add 发票删除
+ * @apiName  发票删除
+ * @apiGroup 发票
+ * @apiDescription  删除发票
+ * @apiVersion  1.0.0
+ * 
+ * @apiHeader {String} Authorization token
+ * 
+ * @apiBody {String}    id  发票id
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "message": "success",
+ * }
+ * 
+ */
+router.post('/delete', invoiceHandler.delete)
+router.post('/unstate', invoiceHandler.unstate)
 module.exports = router

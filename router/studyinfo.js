@@ -98,6 +98,7 @@ router.get('/getcategory', studyinfoHandler.getcategory)
  * @apiBody {String}    link            课程章节链接
  * @apiBody {String}    level           等级
  * @apiBody {String}    [group]         权限用户组默认all
+ * @apiBody {String}    [tags]          标签
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
@@ -143,6 +144,7 @@ router.post('/delete', studyinfoHandler.delete)
  * @apiBody {String}    [link]          课程章节链接
  * @apiBody {String}    [level]         等级
  * @apiBody {String}    [group]         权限用户组默认all
+ * @apiBody {String}    [tags]          标签
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
