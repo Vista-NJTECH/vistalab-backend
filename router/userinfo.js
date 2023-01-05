@@ -12,8 +12,7 @@ const userinfoHandler = require('../router_handler/userinfo')
  * @apiDescription 返回用户token
  * @apiVersion  1.0.0
  * 
- * @apiBody {String} username
- * @apiBody {String} password
+ * @apiBody {String} id
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:

@@ -14,9 +14,6 @@ app.use(cors())
 // 导入配置文件
 const config = require('./config')
 
-// 解析 token 的中间件
-const expressJWT = require('express-jwt')
-
 // 中间件全局变量，需在路由前定义
 app.use(function (req, res, next) {
   res.cc = function (err, status = false) {
@@ -30,9 +27,12 @@ app.use(function (req, res, next) {
 
 /**********************************
 // token中间件过滤-弃用
-//app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//],algorithms:['HS256'] }))
 ***********************************/
-
+const { expressjwt: jwt } = require('express-jwt')
+app.use(jwt({ 
+  secret: config.jwtSecretKey,
+  algorithms: ["HS256"] 
+}).unless({ path: ['/api','/study','/schedule','/member']}))
 ////////////////////////////////////////////////////////////////////
 // 路由
 

@@ -5,11 +5,9 @@ const sql = `select id, username, name, email, userpic, level, created_time from
 
 
 exports.getUserInfo = (req, res) => {
-    db.query(sql, req.user.id, (err, results) => {
+    db.query(sql, req.auth.id, (err, results) => {
         if (err) return res.cc(err)
-      
         if (results.length !== 1) return res.cc('获取用户信息失败！')
-      
         res.send({
           status: true,
           message: '获取用户基本信息成功！',
