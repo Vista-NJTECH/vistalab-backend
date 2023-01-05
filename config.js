@@ -8,6 +8,7 @@ module.exports = {
 }
   
 module.exports.imgLimit = {
+  base64SavePath: "public/uploads/base64Url/",
   maxSize: 5000000,
   uesBlur: true,
 }
