@@ -16,7 +16,11 @@ exports.getall = (req, res) => {
 
 exports.add = (req, res) => {
     const scheduleIns = req.body
-
+    if(!scheduleIns.group){
+      var group = "all"
+    }else{
+      var group = scheduleIns.group
+    }
     const sql = 'insert into schedule_info set ?'
     db.query(sql, { 
         title: scheduleIns.title, 
@@ -25,7 +29,7 @@ exports.add = (req, res) => {
         persons: scheduleIns.persons,
         detail: scheduleIns.detail,
         level: scheduleIns.level,
-        p_group: scheduleIns.p_group,}, function (err, results) {
+        group: group,}, function (err, results) {
 
     if (err) return res.cc(err)
 
@@ -41,12 +45,12 @@ exports.delete = (req, res) => {
     const sql = `delete from schedule_info WHERE id=?`
     db.query(sql, [req.body.id],function(err, results2) {
       if (err) return res.cc(err)
-  
-      return res.cc('success', true)
+      return res.cc('日程删除成功!', true)
     })
 }
 
 exports.update = (req, res) => {
+  const scheduleIns = req.body
   const sql = `UPDATE schedule_info SET ? WHERE id = ?`
             db.query(sql, [{ 
               title: scheduleIns.title, 
@@ -55,7 +59,7 @@ exports.update = (req, res) => {
               persons: scheduleIns.persons,
               detail: scheduleIns.detail,
               level: scheduleIns.level,
-              p_group: scheduleIns.p_group,}, req.body.id], function (err, results) {
+              group: scheduleIns.group,}, req.body.id], function (err, results) {
                 if (err){
                   return res.cc(err)
                 } 

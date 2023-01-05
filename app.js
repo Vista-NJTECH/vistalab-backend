@@ -58,9 +58,10 @@ app.use('/schedule', scheduleinfo_router)
 const memberinfo_router = require('./router/memberinfo')
 app.use('/member', memberinfo_router)
 
-
+const invoice_router = require('./router/invoice')
+app.use('/invoice', invoice_router)
 ////////////////////////////////////////////////////////////////////
-
+app.use('/apidoc', express.static('apidoc'));
 ////////////////////////////////////////////////////////////////////
 // 错误中间件
 const joi = require('joi')

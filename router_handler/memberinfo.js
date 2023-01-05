@@ -7,7 +7,7 @@ exports.getall = (req, res) => {
       if (err) return res.cc(err)
   
       res.send({
-        status: 0,
+        status: true,
         data: results,
       })
   

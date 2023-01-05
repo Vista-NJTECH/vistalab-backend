@@ -10,12 +10,14 @@
   "dependencies": {
     "@escook/express-joi": "^1.1.1",
     "array-to-image": "^1.0.0",
+    "axios": "^1.2.2",
     "bcryptjs": "^2.4.3",
     "blurhash": "^2.0.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-jwt": "^8.2.1",
+    "form-data": "^4.0.0",
     "gm": "^1.25.0",
     "image-size": "^1.0.2",
     "jimp": "^0.16.2",
@@ -26,5 +28,9 @@
     "sharp": "^0.31.3"
   },
   "keywords": [],
-  "license": "ISC"
+  "license": "ISC",
+  "apidoc": {
+    "title": "接口文档",
+    "url": "http://localhost:8180"
+  }
 }
