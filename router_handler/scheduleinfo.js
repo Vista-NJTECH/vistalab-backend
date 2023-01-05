@@ -33,7 +33,7 @@ exports.add = (req, res) => {
         return res.cc('添加日程失败，请稍后再试！')
     }
 
-    return res.cc('添加日程成功！', true)
+    return res.cc('添加日程成功!', true)
     })
 }
 
@@ -44,5 +44,25 @@ exports.delete = (req, res) => {
   
       return res.cc('success', true)
     })
+}
+
+exports.update = (req, res) => {
+  const sql = `UPDATE schedule_info SET ? WHERE id = ?`
+            db.query(sql, [{ 
+              title: scheduleIns.title, 
+              date: scheduleIns.date,
+              host: scheduleIns.host,
+              persons: scheduleIns.persons,
+              detail: scheduleIns.detail,
+              level: scheduleIns.level,
+              p_group: scheduleIns.p_group,}, req.body.id], function (err, results) {
+                if (err){
+                  return res.cc(err)
+                } 
+                if (results.affectedRows !== 1) {
+                  return res.cc("更新数据库schedule_info失败!")
+                }
+                return res.cc('更新成功!', true)
+            })
 }
 

@@ -10,4 +10,6 @@ router.get('/delete', scheduleHandler.delete)
 
 router.post('/add', scheduleHandler.add)
 
+router.post('/update', scheduleHandler.update)
+
 module.exports = router
