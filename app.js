@@ -28,11 +28,13 @@ app.use(function (req, res, next) {
 /**********************************
 // token中间件过滤-弃用
 ***********************************/
+
 const { expressjwt: jwt } = require('express-jwt')
 app.use(jwt({ 
   secret: config.jwtSecretKey,
-  algorithms: ["HS256"] 
-}).unless({ path: ['/api','/study','/schedule','/member']}))
+  algorithms: ["HS256"]
+}).unless({ path: [/^\/api\//,/^\/study\//,/^\/schedule\//,/^\/member\//,/^\/apidoc\//]}))
+
 ////////////////////////////////////////////////////////////////////
 // 路由
 

@@ -75,7 +75,7 @@ router.post('/add', upload.single('pdfile'), invoiceHandler.add)
 router.get('/getall', invoiceHandler.getall)
 /**
  * 
- * @api {post} /invoice/add 发票删除
+ * @api {post} /invoice/delete 发票删除
  * @apiName  发票删除
  * @apiGroup 发票
  * @apiDescription  删除发票
@@ -91,8 +91,36 @@ router.get('/getall', invoiceHandler.getall)
  *  "status": true,
  *  "message": "success",
  * }
- * 
+ * @apiErrorExample {json} Error-Response:
+ *     {
+ *      "status": false,
+ *      "message": "您没有权限删除!"
+ *     }
  */
 router.post('/delete', invoiceHandler.delete)
+/**
+ * 
+ * @api {post} /invoice/unstate 发票状态
+ * @apiName  发票状态
+ * @apiGroup 发票
+ * @apiDescription  更新状态发票
+ * @apiVersion  1.0.0
+ * 
+ * @apiHeader {String} Authorization token
+ * 
+ * @apiBody {String}    id  发票id
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "message": "发票删除成功!"
+ * }
+ * @apiErrorExample {json} Error-Response:
+ *     {
+ *      "status": false,
+ *      "message": "您没有权限修改!"
+ *     }
+ */
 router.post('/unstate', invoiceHandler.unstate)
 module.exports = router

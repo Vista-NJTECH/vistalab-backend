@@ -14,7 +14,7 @@ module.exports.imgLimit = {
 }
 
 module.exports.deploy = {
-  port: 8180,
-  host: 'localhost'
+  port: 8181,
+  host: 'db'
 }
 
