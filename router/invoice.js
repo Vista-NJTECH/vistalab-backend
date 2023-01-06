@@ -120,7 +120,7 @@ router.post('/delete', invoiceHandler.delete)
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "message": "发票删除成功!"
+ *  "message": "发票状态更新成功!"
  * }
  * @apiErrorExample {json} Error-Response:
  *     {

@@ -99,7 +99,7 @@ exports.unstate = (req, res) => {
                 db.query(sql, [(state == 1) ? 0 : 1, req.body.id], function (err, results) {
                     if (err)return res.cc(err)
                     if (results.affectedRows !== 1) return res.cc("更新数据库invoice_info失败!")
-                    return res.cc('更新成功!', true)
+                    return res.cc('发票状态更新成功!', true)
                 })
             })
         })
