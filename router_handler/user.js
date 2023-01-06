@@ -62,7 +62,7 @@ exports.login = (req, res) => {
     //res.cookie("token",'vista ' + tokenStr,{maxAge:config.cookieage,httpOnly:true});
 
     res.send({
-      status: 0,
+      status: true,
       message: '登录成功！',
       token: 'Bearer ' + tokenStr,
     })
