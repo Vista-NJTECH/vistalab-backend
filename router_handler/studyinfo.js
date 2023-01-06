@@ -49,7 +49,7 @@ exports.getall = (req, res) => {
     res.send({
       status: true,
       data: results,
-      prefix: "https://backend.vistalab.top/",
+      prefix: config.url_prefix,
     })
 
   })
@@ -207,13 +207,13 @@ async function saveImg(req){
   let types=['jpeg','jpg','png','gif'];
   let tmpType=mimetype.split('/')[1];
   //-------------------------------
-  if(size > config.imgLimit.maxSize){
+  if(size > config.studyinfo.maxSize){
     fs.unlink(filepath,function(error){
       if(error){
         return res.cc(error)
       }
     })
-    return res.cc('上传的内容不能超过' + config.imgLimit.maxSize)
+    return res.cc('上传的内容不能超过' + config.studyinfo.maxSize)
   }else if(types.indexOf(tmpType)==-1){
     fs.unlink(req.file.path,function(error){
       if(error){
@@ -265,11 +265,11 @@ async function saveImg(req){
     overshootDeringing: true,
     quality: 40,
   }).toBuffer()
-  //.toFile(config.imgLimit.base64SavePath + savename)
+  //.toFile(config.studyinfo.base64SavePath + savename)
 
   var base64url = `data:image/png;base64,${image.toString('base64')}`
   //console.log(base64url);
-  //var base64url = config.imgLimit.base64SavePath + savename;
+  //var base64url = config.studyinfo.base64SavePath + savename;
 
   return {
     blurl: blurl, 

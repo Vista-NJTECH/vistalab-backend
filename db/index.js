@@ -5,8 +5,8 @@ const config = require('../config')
 const db = mysql.createPool({
   host: config.deploy.host,
   user: 'root',
-  password: '196511',
-  database: 'lab',
+  password: config.db.root_pwd,
+  database: config.db.database,
 })
 
 module.exports = db

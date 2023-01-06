@@ -10,6 +10,5 @@ exports.getall = (req, res) => {
         status: true,
         data: results,
       })
-  
     })
 }

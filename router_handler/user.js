@@ -66,7 +66,5 @@ exports.login = (req, res) => {
       message: '登录成功！',
       token: 'Bearer ' + tokenStr,
     })
-
   })
-  
 }
