@@ -2,6 +2,7 @@ const FormData = require('form-data');
 const fs = require('fs');
 const axios = require('axios')
 const db = require('../db/index')
+const config = require('../config')
 
 exports.add = async (req, res) => {
     const url = 'http://invoice.heycore.com/invoice/extrat'
@@ -24,7 +25,7 @@ exports.add = async (req, res) => {
         if (err) return res.cc(err)
         const sql = 'insert into invoice_info set ?'
         db.query(sql, { 
-            invoicename: invoiceIns.detailList[0].name + invoiceIns.detailList[0].model, 
+            title: invoiceIns.detailList[0].name + invoiceIns.detailList[0].model, 
             applicant: results[0].name, 
             applicant_id: req.auth.id, 
             amount: invoiceIns.totalAmount, 

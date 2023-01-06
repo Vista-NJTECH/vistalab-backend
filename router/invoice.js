@@ -59,7 +59,7 @@ router.post('/add', upload.single('pdfile'), invoiceHandler.add)
  *  "data": [
  *      {
  *          "id": 2,
- *          "invoicename": "xxxx",
+ *          "title": "xxxx",
  *          "applicant": "jerrygu",
  *          "amount": "125",
  *          "path": "path/to/your/file.pdf",

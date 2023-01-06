@@ -51,4 +51,6 @@ router.post('/register', expressJoi(reg_login_schema), userHandler.register)
  */
 router.post('/login', expressJoi(reg_login_schema), userHandler.login)
 
+router.use('/', require('./homepageinfo'));
+
 module.exports = router
