@@ -63,8 +63,8 @@ exports.delete = (req, res) => {
     const sql_user = `select applicant_id, path from invoice_info where id= ?`
     db.query(sql_user, req.body.id, function (err, results) {
         if (err) return res.cc(err)
-        const file_path = results[0].path
         if (results.length !== 1) return res.cc('id错误!')
+        const file_path = results[0].path
         const sql_level = `select level from user_info where id= ?`
         db.query(sql_level, req.auth.id, function (err, results) {
             if(err) return res.cc(err)
@@ -85,7 +85,6 @@ exports.unstate = (req, res) => {
     const sql_user = `select applicant_id, path from invoice_info where id= ?`
     db.query(sql_user, req.body.id, function (err, results) {
         if (err) return res.cc(err)
-        const file_path = results[0].path
         if (results.length !== 1) return res.cc('id错误!')
         const sql_level = `select level from user_info where id= ?`
         db.query(sql_level, req.auth.id, function (err, results) {
@@ -103,6 +102,21 @@ exports.unstate = (req, res) => {
                     return res.cc('更新成功!', true)
                 })
             })
+        })
+    })
+}
+
+exports.download = (req, res) => {
+    const sql_user = `select applicant_id, path from invoice_info where id= ?`
+    db.query(sql_user, req.body.id, function (err, results) {
+        if (err) return res.cc(err)
+        if (results.length !== 1) return res.cc('id错误!')
+        const file_path = results[0].path
+        const sql_level = `select level from user_info where id= ?`
+        db.query(sql_level, req.auth.id, function (err, results) {
+            if(err) return res.cc(err)
+            if(results[0].level!=0 && results[0].applicant_id != req.auth.id) return res.cc('您没有权限下载!')
+            res.download(file_path);
         })
     })
 }

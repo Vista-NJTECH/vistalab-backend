@@ -33,7 +33,7 @@ const { expressjwt: jwt } = require('express-jwt')
 app.use(jwt({ 
   secret: config.jwtSecretKey,
   algorithms: ["HS256"]
-}).unless({ path: [/^\/api\//,/^\/study\//,/^\/schedule\//,/^\/member\//,/^\/apidoc\//,/^\/public\//,/^\/invoice\//]}))
+}).unless({ path: [/^\/api\//,/^\/study\//,/^\/schedule\//,/^\/member\//,/^\/apidoc\//,/^\/public\//]}))
 
 ////////////////////////////////////////////////////////////////////
 // 路由

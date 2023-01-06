@@ -129,4 +129,30 @@ router.post('/delete', invoiceHandler.delete)
  *     }
  */
 router.post('/unstate', invoiceHandler.unstate)
+/**
+ * 
+ * @api {post} /invoice/download 发票下载
+ * @apiName  发票下载
+ * @apiGroup 发票
+ * @apiDescription  下载发票
+ * @apiVersion  1.0.0
+ * 
+ * @apiHeader {String} Authorization token
+ * 
+ * @apiBody {String}    id  发票id
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiErrorExample {json} Error-Response:
+ *     {
+ *      "status": false,
+ *      "message": "您没有权限修改!"
+ *     }
+ * @apiErrorExample {json} Error-Response:
+ *     {
+ *      "status": false,
+ *      "message": "id错误!"
+ *     }
+ */
+router.get('/download', invoiceHandler.download)
+
 module.exports = router
