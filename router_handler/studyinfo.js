@@ -49,7 +49,7 @@ exports.getall = (req, res) => {
     res.send({
       status: true,
       data: results,
-      prefix: "http://124.223.196.177:8182/"
+      prefix: "https://backend.vistalab.top/",
     })
 
   })

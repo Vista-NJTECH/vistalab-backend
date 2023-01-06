@@ -54,6 +54,7 @@ exports.getall = (req, res) => {
       res.send({
         status: true,
         data: results,
+        prefix: "https://backend.vistalab.top/",
       })
     })
 }
