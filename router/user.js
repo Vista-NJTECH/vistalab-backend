@@ -44,9 +44,8 @@ router.post('/register', expressJoi(reg_login_schema), userHandler.register)
  * @apiSuccessExample {type} Response-Example:
  * {
  *  status: 0,
-    message: '登录成功！',
-    token: 'vista ' + tokenStr,
- *  }
+ *  message: '登录成功！',
+ *  token: 'vista ' + tokenStr,
  * }
  * 
  */
