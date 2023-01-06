@@ -92,6 +92,12 @@ router.get('/getall', invoiceHandler.getall)
  *  "message": "success",
  * }
  * @apiErrorExample {json} Error-Response:
+ *    {
+ *     "status": false,
+ *     "message": "You have no access to this page!"
+ *    }
+ * 
+ * @apiErrorExample {json} Error-Response:
  *     {
  *      "status": false,
  *      "message": "您没有权限删除!"

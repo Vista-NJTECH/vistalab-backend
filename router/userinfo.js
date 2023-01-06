@@ -52,6 +52,8 @@ router.get('/userinfo', userinfoHandler.getUserInfo)
  * 
  * @apiHeader {String} Authorization token
  * 
+ * @apiBody {File} avatar       头像文件
+ * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
