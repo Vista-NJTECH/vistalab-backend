@@ -6,7 +6,7 @@ const competitioninfoHandler = require('../router_handler/competition-info')
 
 /**
  * 
- * @api {get} /api/getcompetition 获取比赛信息
+ * @api {get} /competition/getall 获取比赛信息
  * @apiName  获取比赛信息
  * @apiGroup Compitition
  * @apiDescription  获取比赛信息
@@ -21,12 +21,15 @@ const competitioninfoHandler = require('../router_handler/competition-info')
  *  "data": [
  *      {
  *          "id": 1,
- *          "name": "xxxx",
- *          "introduction": "xxxx",
- *          "link": "{\"k1\": \"value\", \"k2\": [10, 20]}"
- *      }
+ *          "name": "全国大学生智能汽车竞赛",
+ *          "introduction": "航天智慧物流组",
+ *          "link": {
+ *              "官网": "xxxx",
+ *              "xxx": "xxxx"
+ *          }
+ *      },
  *  ]
  * 
  */
-router.get('/getcompetition', competitioninfoHandler.getCompetition)
+router.get('/getall', competitioninfoHandler.getCompetition)
 module.exports = router
