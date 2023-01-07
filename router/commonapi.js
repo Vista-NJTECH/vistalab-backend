@@ -6,6 +6,8 @@ const commonapiHandler = require('../router_handler/commonapi')
 
 router.use('/', require('./homepageinfo'));
 
+router.use('/', require('./competition-info'));
+
 router.use('/', require('./user'));
 /**
  * 
