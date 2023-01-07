@@ -73,7 +73,81 @@ exports.getcategory = (req, res) => {
 }
 
 exports.add = async (req, res) => {
-  addlog(req, res);
+  var img_path;
+  //------------表单验证-----------
+  try {
+    const validation = await studyinfo_schema.validate(req.body)
+    if(validation.error){
+      if(req.file.path){
+        fs.unlink(req.file.path,function(error){
+          if(error){
+            return res.cc(error)
+          }
+        })
+      }
+      return res.cc(validation.error)
+    }
+  } catch (err) {
+    return res.cc(err)
+  }
+  if(!req.file){
+    img_path = "public/src/default.png";
+    const sql = 'insert into study_info set ?'
+      db.query(sql, { 
+        link: req.body.link, 
+        classification: req.body.classification, 
+        coursename: req.body.coursename, 
+        title: req.body.title,
+        img_id: 1,
+        tags: req.body.tags,
+      }, function (err, results) {
+          if (err){
+            return res.cc(err)
+          } 
+          if (results.affectedRows !== 1) {
+            return res.cc("插入数据库study_info失败!")
+          }
+          return res.cc('上传成功!', true)
+      })
+
+  }else{
+    img_path = req.file.path
+    const imgInfo = await image_utils.saveImg(req)
+    const sql = 'insert into img_info set ?'
+    db.query(sql, { 
+      path: img_path, 
+      size: imgInfo.info.size,
+      blur: imgInfo.blurl,
+      base64: imgInfo.base64url,
+      width: imgInfo.info.width, 
+      height: imgInfo.info.height,
+    }, function (err, results) {
+        if (err){
+          return res.cc(err)
+        } 
+        if (results.affectedRows !== 1) {
+          return res.cc("插入数据库img_info失败!")
+        }
+        if (err) return res.cc(err)
+        const sql = 'insert into study_info set ?'
+        db.query(sql, { 
+          link: req.body.link, 
+          classification: req.body.classification, 
+          coursename: req.body.coursename, 
+          title: req.body.title, 
+          img_id: results.insertId,
+          tags: req.body.tags,
+        }, function (err, results) {
+            if (err){
+              return res.cc(err)
+            } 
+            if (results.affectedRows !== 1) {
+              return res.cc("插入数据库study_info失败!")
+            }
+            return res.cc('上传成功!', true)
+        })
+      })
+    }
 }
 
 exports.update = async (req, res) => {
@@ -201,88 +275,4 @@ exports.update = async (req, res) => {
     })  
   }
   
-}
-
-async function addlog(req, res, update = false){
-  var img_path;
-  //------------表单验证-----------
-  try {
-    const validation = await studyinfo_schema.validate(req.body)
-    if(validation.error){
-      if(req.file.path){
-        fs.unlink(req.file.path,function(error){
-          if(error){
-            return res.cc(error)
-          }
-        })
-      }
-      return res.cc(validation.error)
-    }
-  } catch (err) {
-    return res.cc(err)
-  }
-  if(!req.file){
-    img_path = "public/src/default.png";
-    const sql = 'insert into study_info set ?'
-      db.query(sql, { 
-        link: req.body.link, 
-        classification: req.body.classification, 
-        coursename: req.body.coursename, 
-        title: req.body.title,
-        img_id: 1,
-        tags: req.body.tags,
-      }, function (err, results) {
-          if (err){
-            return res.cc(err)
-          } 
-          if (results.affectedRows !== 1) {
-            return res.cc("插入数据库study_info失败!")
-          }
-          if(update == true){
-            console.log("update == true")
-          }
-          return res.cc('上传成功!', true)
-      })
-
-  }else{
-    img_path = req.file.path
-    const imgInfo = await image_utils.saveImg(req)
-    const sql = 'insert into img_info set ?'
-    db.query(sql, { 
-      path: img_path, 
-      size: imgInfo.info.size,
-      blur: imgInfo.blurl,
-      base64: imgInfo.base64url,
-      width: imgInfo.info.width, 
-      height: imgInfo.info.height,
-    }, function (err, results) {
-        if (err){
-          return res.cc(err)
-        } 
-        if (results.affectedRows !== 1) {
-          return res.cc("插入数据库img_info失败!")
-        }
-        if (err) return res.cc(err)
-        const sql = 'insert into study_info set ?'
-        db.query(sql, { 
-          link: req.body.link, 
-          classification: req.body.classification, 
-          coursename: req.body.coursename, 
-          title: req.body.title, 
-          img_id: results.insertId,
-          tags: req.body.tags,
-        }, function (err, results) {
-            if (err){
-              return res.cc(err)
-            } 
-            if (results.affectedRows !== 1) {
-              return res.cc("插入数据库study_info失败!")
-            }
-            if(update == true){
-              console.log("update == true")
-            }
-            return res.cc('上传成功!', true)
-        })
-      })
-    }
 }

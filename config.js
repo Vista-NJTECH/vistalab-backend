@@ -22,6 +22,6 @@ module.exports.userinfo = {
   default_avatar: "public/src/default_avatar_resized.png",}
 
 module.exports.deploy = {
-  port: 8181,
-  host: 'db'
+  port: 8180,
+  host: 'localhost'
 }

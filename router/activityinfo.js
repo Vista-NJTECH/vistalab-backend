@@ -25,22 +25,25 @@ const upload = multer({storage})
  * @apiDescription  获取首页动态信息
  * @apiVersion  1.0.0
  * 
+ * @apiParam {Int} [count] 数量
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "data": {
+ *  "data": [{
+ *      "id": 1
  *      "title": "xxxx",
  *      "date": "2022-12-01",
  *      "detail": "xxxx！",
  *      "img": {
  *          "width": "713",
  *          "height": "535",
- *          "path": "public/uploads/activityinfo/1673083375325-activity04.jpg",
+ *          "path": "your.jpg",
  *          "base64": "data:image/png;base64,iVBORw0KGgoAAAANSU="
  *      }
- *  }
+ *  }],
+ *  "prefix": url_prefix,
  * }
  * 
  */
