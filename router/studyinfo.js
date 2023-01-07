@@ -38,6 +38,7 @@ const studyinfoHandler = require('../router_handler/studyinfo')
  *          "width": "1256",
  *          "height": "720",
  *          "blur": "U2S?DV00t6~pITM{xuxuR*Rjxu%M?bRjRjt7",
+ *          "base64": "example",
  *          "time": "2023-01-04T14:58:55.000Z",
  *          "iindex": 0,
  *          "link": "your/link/url",
@@ -48,7 +49,8 @@ const studyinfoHandler = require('../router_handler/studyinfo')
  *          "state": 1,
  *          "level": 1,
  *          "tags": "bilibili"
- *      },]
+ *      },],
+ *  prefix: url_prefix,
  * }
  * 
  */

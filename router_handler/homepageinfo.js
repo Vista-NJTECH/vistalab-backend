@@ -21,6 +21,7 @@ exports.getCertificate = (req, res) => {
       res.send({
         status: true,
         data: results,
+        prefix: config.url_prefix,
       })
     })
 }
