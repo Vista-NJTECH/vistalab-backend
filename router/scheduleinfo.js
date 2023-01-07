@@ -7,7 +7,7 @@ const scheduleHandler = require('../router_handler/scheduleinfo')
  * 
  * @api {get} /schedule/getall 日程信息获取
  * @apiName  日程信息获取
- * @apiGroup 日程
+ * @apiGroup Schedule
  * @apiDescription  获取日程信息
  * @apiVersion  1.0.0
  * 
@@ -38,7 +38,7 @@ router.get('/getall', scheduleHandler.getall)
  * 
  * @api {post} /schedule/delete 日程删除
  * @apiName  日程删除
- * @apiGroup 日程
+ * @apiGroup Schedule
  * @apiDescription  删除日程信息
  * @apiVersion  1.0.0
  * 
@@ -57,7 +57,7 @@ router.post('/delete', scheduleHandler.delete)
  * 
  * @api {post} /schedule/add 日程添加
  * @apiName  日程添加
- * @apiGroup 日程
+ * @apiGroup Schedule
  * @apiDescription  添加日程信息
  * @apiVersion  1.0.0
  * 
@@ -83,7 +83,7 @@ router.post('/add', scheduleHandler.add)
  * 
  * @api {post} /schedule/update 日程更新
  * @apiName  日程更新
- * @apiGroup 日程
+ * @apiGroup Schedule
  * @apiDescription  更新日程信息
  * @apiVersion  1.0.0
  * 

@@ -12,7 +12,7 @@ const { reg_login_schema } = require('../schema/user')
  * 
  * @api {post} /api/register 用户注册
  * @apiName  用户注册
- * @apiGroup 用户
+ * @apiGroup User
  * @apiDescription  用户注册
  * @apiVersion  1.0.0
  * 
@@ -33,7 +33,7 @@ router.post('/register', expressJoi(reg_login_schema), userHandler.register)
  * 
  * @api {post} /api/register 用户登录
  * @apiName 用户登录
- * @apiGroup 用户
+ * @apiGroup User
  * @apiDescription 返回用户token
  * @apiVersion  1.0.0
  * 

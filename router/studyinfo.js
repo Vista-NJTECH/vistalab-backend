@@ -19,7 +19,7 @@ const studyinfoHandler = require('../router_handler/studyinfo')
  * 
  * @api {get} /study/getall 课程信息获取
  * @apiName  课程信息获取
- * @apiGroup 课程
+ * @apiGroup Study
  * @apiDescription  获取课程信息
  * @apiVersion  1.0.0
  * 
@@ -59,7 +59,7 @@ router.get('/getall', studyinfoHandler.getall)
  * 
  * @api {get} /study/getcategory 课程分类信息获取
  * @apiName  课程分类信息获取
- * @apiGroup 课程
+ * @apiGroup Study
  * @apiDescription  获取一级分类下课程信息信息，无一级分类则输出所有信息
  * @apiVersion  1.0.0
  * 
@@ -88,7 +88,7 @@ router.get('/getcategory', studyinfoHandler.getcategory)
  * 
  * @api {post} /study/add 课程添加
  * @apiName  课程添加
- * @apiGroup 课程
+ * @apiGroup Study
  * @apiDescription  添加课程信息
  * @apiVersion  1.0.0
  * 
@@ -114,7 +114,7 @@ router.post('/add', upload.single('studyimg'), studyinfoHandler.add)
  * 
  * @api {post} /study/delete 课程删除
  * @apiName  课程删除
- * @apiGroup 课程
+ * @apiGroup Study
  * @apiDescription  删除课程信息
  * @apiVersion  1.0.0
  * 
@@ -133,7 +133,7 @@ router.post('/delete', studyinfoHandler.delete)
  * 
  * @api {post} /study/add 课程更新
  * @apiName  课程更新
- * @apiGroup 课程
+ * @apiGroup Study
  * @apiDescription  更新课程信息
  * @apiVersion  1.0.0
  * 

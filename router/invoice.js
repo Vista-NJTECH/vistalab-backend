@@ -20,7 +20,7 @@ const upload = multer({storage})
  * 
  * @api {post} /invoice/add 发票添加
  * @apiName  发票添加
- * @apiGroup 发票
+ * @apiGroup Invoice
  * @apiDescription  添加发票
  * @apiVersion  1.0.0
  * 
@@ -46,7 +46,7 @@ router.post('/add', upload.single('pdfile'), invoiceHandler.add)
  * 
  * @api {get} /invoice/getall 发票信息获取
  * @apiName  发票信息获取
- * @apiGroup 发票
+ * @apiGroup Invoice
  * @apiDescription  获取发票信息
  * @apiVersion  1.0.0
  * 
@@ -77,7 +77,7 @@ router.get('/getall', invoiceHandler.getall)
  * 
  * @api {post} /invoice/delete 发票删除
  * @apiName  发票删除
- * @apiGroup 发票
+ * @apiGroup Invoice
  * @apiDescription  删除发票
  * @apiVersion  1.0.0
  * 
@@ -108,7 +108,7 @@ router.post('/delete', invoiceHandler.delete)
  * 
  * @api {post} /invoice/unstate 发票状态
  * @apiName  发票状态
- * @apiGroup 发票
+ * @apiGroup Invoice
  * @apiDescription  更新状态发票
  * @apiVersion  1.0.0
  * 
@@ -133,7 +133,7 @@ router.post('/unstate', invoiceHandler.unstate)
  * 
  * @api {post} /invoice/download 发票下载
  * @apiName  发票下载
- * @apiGroup 发票
+ * @apiGroup Invoice
  * @apiDescription  下载发票
  * @apiVersion  1.0.0
  * 

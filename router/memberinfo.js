@@ -7,7 +7,7 @@ const memberinfoHandler = require('../router_handler/memberinfo')
  * 
  * @api {get} /member/getall 成员信息获取
  * @apiName  成员信息获取
- * @apiGroup 成员
+ * @apiGroup Member
  * @apiDescription  获取成员信息
  * @apiVersion  1.0.0
  * 

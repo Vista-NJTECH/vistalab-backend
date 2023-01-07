@@ -12,7 +12,7 @@ router.use('/', require('./user'));
  * 
  * @api {get} /api/getimg 通用获取图片
  * @apiName  通用获取图片base64
- * @apiGroup 通用
+ * @apiGroup Commom
  * @apiDescription  获取图片base64
  * @apiVersion  1.0.0
  * 

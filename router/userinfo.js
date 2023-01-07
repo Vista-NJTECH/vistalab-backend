@@ -18,7 +18,7 @@ const userinfoHandler = require('../router_handler/userinfo')
  * 
  * @api {get} /my/userinfo 用户信息
  * @apiName 用户信息
- * @apiGroup 用户
+ * @apiGroup User
  * @apiDescription 返回用户信息
  * @apiVersion  1.0.0
  * 
@@ -46,7 +46,7 @@ router.get('/userinfo', userinfoHandler.getUserInfo)
  * 
  * @api {post} /my/updateavatar 用户头像更新
  * @apiName 用户头像更新
- * @apiGroup 用户
+ * @apiGroup User
  * @apiDescription 更新用户头像
  * @apiVersion  1.0.0
  * 
