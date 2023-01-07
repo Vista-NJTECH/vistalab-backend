@@ -8,7 +8,7 @@ const multer = require('multer')
 
 const storage = multer.diskStorage({
     destination(req, file, cb){
-        cb(null, 'public/uploads/activatyinfoimg/')
+        cb(null, 'public/uploads/activityinfo/')
       
     },
     filename(req, file, cb){
@@ -47,6 +47,46 @@ const upload = multer({storage})
  * }
  * 
  */
-router.get('/getactivity', upload.single("img"), activityinfoHandler.getActivity)
-
+router.get('/getactivity', activityinfoHandler.getActivity)
+/**
+ * 
+ * @api {post} /activity/add 添加动态信息
+ * @apiName  添加动态信息
+ * @apiGroup Activity
+ * @apiDescription  添加动态信息
+ * @apiVersion  1.0.0
+ * 
+ * @apiBody {File}   img    动态图片
+ * @apiBody {String} title  标题
+ * @apiBody {String} date   日期 需要匹配yyyy-mm-dd
+ * @apiBody {String} detail 详情
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "message": "success"
+ * }
+ * 
+ */
+router.post('/add', upload.single("img"), activityinfoHandler.addActivity)
+/**
+ * 
+ * @api {post} /activity/delete 动态信息删除
+ * @apiName  删除动态信息
+ * @apiGroup Activity
+ * @apiDescription  删除动态信息
+ * @apiVersion  1.0.0
+ * 
+ * @apiBody {String}    id  动态信息id
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "message": "删除成功!"
+ * }
+ * 
+ */
+router.post('/delete', activityinfoHandler.delete)
 module.exports = router

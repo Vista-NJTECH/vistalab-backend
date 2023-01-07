@@ -26,7 +26,7 @@ const upload = multer({storage})
  * 
  * @apiHeader {String} Authorization token
  * 
- * @apiBody {File} pdfile       你的发票
+ * @apiBody {File}   pdfile       你的发票
  * @apiBody {String} remark     备注信息
  * @apiBody {String} category   分类
  * 
