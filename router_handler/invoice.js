@@ -20,6 +20,9 @@ exports.add = async (req, res) => {
 
     const invoiceIns = response.data
 
+    if(!invoiceIns.detailList[0]){
+        res.cc("后端失效!")
+    }
     const sql_user = `select name from user_info where id= ? `
     db.query(sql_user, req.auth.id, function (err, results) {
         if (err) return res.cc(err)

@@ -4,7 +4,7 @@ const router = express.Router()
 
 const storage = multer.diskStorage({
    destination(req, file, cb){
-       cb(null, 'public/uploads/temp/')
+       cb(null, 'public/uploads/avatar/')
      
    },
    filename(req, file, cb){
@@ -27,14 +27,14 @@ const userinfoHandler = require('../router_handler/userinfo')
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
- *  "status": true,
+ *   "status": true,
  *  "message": "获取用户基本信息成功！",
- *  "data": {
+ *  "userinfo": {
  *      "id": 1,
  *      "username": "doiry",
- *      "name": "JerryGu",
+ *      "avatar": "https://backend.vistalab.top/public/uploads/avatar/1673069127915-default_avatar.png",
+ *      "name": "jerryGu",
  *      "email": "jerrygu.gjw@gmail.com",
- *      "avatar": "data:image/png;base64,xxxx",
  *      "level": 0,
  *      "created_time": "2022-12-26T07:02:16.000Z"
  *  }

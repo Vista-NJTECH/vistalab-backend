@@ -45,8 +45,8 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.static(path.join(__dirname,'public')));
 
 /////////////
-const user_router = require('./router/user')
-app.use('/api', user_router)
+const commonapi_router = require('./router/commonapi')
+app.use('/api', commonapi_router)
 
 const studyinfo_router = require('./router/studyinfo')
 app.use('/study', studyinfo_router)

@@ -43,10 +43,20 @@ router.post('/register', expressJoi(reg_login_schema), userHandler.register)
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
- *  status: 0,
- *  message: '登录成功！',
- *  token: 'vista ' + tokenStr,
- * }
+ *  "status": true,
+ *  "message": "登录成功！",
+ *  "userinfo": {
+ *      "id": 1,
+ *      "password": "",
+ *      "username": "doiry",
+ *      "avatar": "https://backend.vistalab.top/public/uploads/avatar/1673069127915-default_avatar.png",
+ *      "name": "jerrygu",
+ *      "email": "jerrygu.gjw@gmail.com",
+ *      "level": 0,
+ *      "created_time": "2022-12-26T15:02:16.000Z"
+ *  },
+ *  "token": "Bearer token"
+ *  }
  * 
  */
 router.post('/login', expressJoi(reg_login_schema), userHandler.login)

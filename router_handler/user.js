@@ -41,7 +41,7 @@ exports.register = (req, res) => {
 // 登录的处理函数
 exports.login = (req, res) => {
   const userinfo = req.body
-  const sql = `select * from user_info where username=?`
+  const sql = `select id, password, username, name, email, avatar, level, created_time from user_info where username=?`
   db.query(sql, userinfo.username, function (err, results) {
     // 执行 SQL 语句失败
     if (err) return res.cc(err)
@@ -53,9 +53,10 @@ exports.login = (req, res) => {
     if (!compareResult) {
       return res.cc('登录失败！')
     }
-
-    const user = { ...results[0], password: '', avatar: '', name: "", email: "", level: "",created_time: "" }
-    const tokenStr = jwt.sign(user, config.jwtSecretKey, {
+    if(results[0].avatar == null) results[0].avatar = config.userinfo.default_avatar
+    const user = { ...results[0], password: '', avatar: config.url_prefix + results[0].avatar}
+    const usertoken = { ...results[0], password: '', avatar: '', name: "", email: "", level: "",created_time: "" }
+    const tokenStr = jwt.sign(usertoken, config.jwtSecretKey, {
       expiresIn: config.expiresIn,
     })
 
@@ -64,6 +65,7 @@ exports.login = (req, res) => {
     res.send({
       status: true,
       message: '登录成功！',
+      userinfo : user,
       token: 'Bearer ' + tokenStr,
     })
   })
