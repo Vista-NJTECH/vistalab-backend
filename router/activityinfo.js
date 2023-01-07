@@ -19,9 +19,9 @@ const upload = multer({storage})
 
 /**
  * 
- * @api {post} /api/getactivity 获取动态信息
+ * @api {get} /activity/getactivity 获取动态信息
  * @apiName  获取动态信息
- * @apiGroup Home
+ * @apiGroup Activity
  * @apiDescription  获取首页动态信息
  * @apiVersion  1.0.0
  * 
@@ -30,10 +30,20 @@ const upload = multer({storage})
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "message": "插入成功!"
+ *  "data": {
+ *      "title": "xxxx",
+ *      "date": "2022-12-01",
+ *      "detail": "xxxx！",
+ *      "img": {
+ *          "width": "713",
+ *          "height": "535",
+ *          "path": "public/uploads/activityinfo/1673083375325-activity04.jpg",
+ *          "base64": "data:image/png;base64,iVBORw0KGgoAAAANSU="
+ *      }
+ *  }
  * }
  * 
  */
-router.post('/getactivity', upload.single("img"), activityinfoHandler.getActivity)
+router.get('/getactivity', upload.single("img"), activityinfoHandler.getActivity)
 
 module.exports = router

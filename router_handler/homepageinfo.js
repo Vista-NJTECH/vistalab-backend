@@ -32,7 +32,7 @@ exports.getAchievement = (req, res) => {
 }
 
 exports.getCertificate = (req, res) => {
-    const sql = `select path from img_info, achievement_info where (img_info.id = achievement_info.img_id) order by iindex asc`
+    const sql = `select path, width, height from img_info, achievement_info where (img_info.id = achievement_info.img_id) order by iindex asc`
     db.query(sql, function (err, results) {
       if (err) return res.cc(err)
       res.send({
@@ -44,7 +44,7 @@ exports.getCertificate = (req, res) => {
 }
 
 exports.uploadcert = async (req, res) => {
-    const imgInfo = await image_utils.saveImg(req)
+    const imgInfo = await image_utils.saveImg(req, {width: 720, height: 540})
     const sql = 'insert into img_info set ?'
     db.query(sql, { 
       path: req.file.path, 

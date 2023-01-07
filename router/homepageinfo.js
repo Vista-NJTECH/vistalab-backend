@@ -50,7 +50,9 @@ router.get('/achievement', homepageinfoHandler.getAchievement)
  * "status": true,
  *  "data": [
  *      {
- *          "path": "public/uploads/certificate/1673010046587-znqc16.jpg"
+ *          "path": "your/file/path.png",
+ *          "width": "495",
+ *          "height": "720",
  *      },
  *  ]
  * }

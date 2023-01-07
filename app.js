@@ -33,7 +33,7 @@ const { expressjwt: jwt } = require('express-jwt')
 app.use(jwt({ 
   secret: config.jwtSecretKey,
   algorithms: ["HS256"]
-}).unless({ path: [/^\/api\//,/^\/study\//,/^\/schedule\//,/^\/member\//,/^\/apidoc\//,/^\/public\//]}))
+}).unless({ path: [/^\/api\//,/^\/study\//,/^\/schedule\//,/^\/member\//,/^\/apidoc\//,/^\/public\//,/^\/activity\//]}))
 
 ////////////////////////////////////////////////////////////////////
 // 路由
@@ -47,6 +47,9 @@ app.use(express.static(path.join(__dirname,'public')));
 /////////////
 const commonapi_router = require('./router/commonapi')
 app.use('/api', commonapi_router)
+
+const activityinfo_router = require('./router/activityinfo')
+app.use('/activity', activityinfo_router)
 
 const studyinfo_router = require('./router/studyinfo')
 app.use('/study', studyinfo_router)

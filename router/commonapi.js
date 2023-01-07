@@ -7,8 +7,6 @@ const commonapiHandler = require('../router_handler/commonapi')
 router.use('/', require('./homepageinfo'));
 
 router.use('/', require('./user'));
-
-router.use('/', require('./activityinfo'));
 /**
  * 
  * @api {get} /api/getimg 通用获取图片

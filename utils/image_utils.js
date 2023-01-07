@@ -1,7 +1,7 @@
 const fs = require('fs')
 const config = require('../config')
 
-module.exports.saveImg = async function (req){
+module.exports.saveImg = async function (req, resize = {}){
     let {size,mimetype,path}=req.file;
     let types=['jpeg','jpg','png','gif'];
     let tmpType=mimetype.split('/')[1];
@@ -30,6 +30,7 @@ module.exports.saveImg = async function (req){
       resolveWithObject: true
     });
     
+    /*
     var tmp_wid = parseInt((info.width*720)/info.height)
     sharp.cache(false);
     async function resizeImage(path) {
@@ -49,6 +50,7 @@ module.exports.saveImg = async function (req){
       resolveWithObject: true
     });
     
+    */
     var blurl = encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4)
     const decoded = decode(blurl, info.width, info.height)
   

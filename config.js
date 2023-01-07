@@ -25,4 +25,3 @@ module.exports.deploy = {
   port: 8181,
   host: 'db'
 }
-
