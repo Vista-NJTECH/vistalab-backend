@@ -17,7 +17,7 @@ const homepageinfoHandler = require('../router_handler/homepageinfo')
 
 /**
  * 
- * @api {get} /api/achievement 首页信息
+ * @api {get} /api/achievement 首页奖项信息
  * @apiName  首页奖项信息
  * @apiGroup Home
  * @apiDescription  首页奖项信息
@@ -40,7 +40,7 @@ const homepageinfoHandler = require('../router_handler/homepageinfo')
 router.get('/achievement', homepageinfoHandler.getAchievement)
 /**
  * 
- * @api {get} /api/getcert 首页信息
+ * @api {get} /api/getcert 首页证书图片信息
  * @apiName  首页证书图片
  * @apiGroup Home
  * @apiDescription  获取首页证书图片
