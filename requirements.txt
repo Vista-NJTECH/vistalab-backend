@@ -1,0 +1,5 @@
+libx11-dev
+libboost-all-dev
+cmake
+dlib
+face_recognition

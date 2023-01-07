@@ -70,8 +70,3 @@ exports.login = (req, res) => {
     })
   })
 }
-
-exports.facelogin = (req, res) => {
-  const { Canvas, Image, ImageData } = require('canvas')
-  faceapi.env.monkeyPatch({ Canvas, Image, ImageData })
-}
