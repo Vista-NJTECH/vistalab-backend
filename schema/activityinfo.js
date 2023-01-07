@@ -13,5 +13,6 @@ module.exports.activityinfo_schema = joi.object({
     title : joi.string().required(),
     date : joi.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     title : joi.string().required(),
-    detail : joi.string().required()
+    detail : joi.string().required(),
+    id : joi.string()
 });

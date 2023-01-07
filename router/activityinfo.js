@@ -65,14 +65,14 @@ router.get('/getactivity', activityinfoHandler.getActivity)
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "message": "success"
+ *  "message": "上传成功!"
  * }
  * 
  */
 router.post('/add', upload.single("img"), activityinfoHandler.addActivity)
 /**
  * 
- * @api {post} /activity/delete 动态信息删除
+ * @api {post} /activity/delete 删除动态信息
  * @apiName  删除动态信息
  * @apiGroup Activity
  * @apiDescription  删除动态信息
@@ -89,4 +89,27 @@ router.post('/add', upload.single("img"), activityinfoHandler.addActivity)
  * 
  */
 router.post('/delete', activityinfoHandler.delete)
+/**
+ * 
+ * @api {post} /activity/update 更新动态信息
+ * @apiName  更新动态信息
+ * @apiGroup Activity
+ * @apiDescription  更新动态信息
+ * @apiVersion  1.0.0
+ * 
+ * @apiBody {String} id     动态信息id
+ * @apiBody {File}   img    动态图片
+ * @apiBody {String} title  标题
+ * @apiBody {String} date   日期 需要匹配yyyy-mm-dd
+ * @apiBody {String} detail 详情
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "message": "更新成功!"
+ * }
+ * 
+ */
+router.post('/update', upload.single("img"), activityinfoHandler.update)
 module.exports = router

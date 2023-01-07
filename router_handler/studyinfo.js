@@ -158,7 +158,8 @@ exports.update = async (req, res) => {
       link: req.body.link, 
       classification: req.body.classification, 
       coursename: req.body.coursename, 
-      title: req.body.title}, req.body.id], function (err, results) {
+      title: req.body.title
+    }, req.body.id], function (err, results) {
     if (err){
       return res.cc(err)
     } 
