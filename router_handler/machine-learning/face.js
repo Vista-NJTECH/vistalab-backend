@@ -19,10 +19,7 @@ exports.facelogin = async (req, res) => {
             ...form.getHeaders(),
             }
         });
-        if(!resp.status){
-            res.cc("登录失败!")
-        }
-        if(!resp.status != 200){
+        if(resp.status != 200){
             res.cc("登录失败!")
         }
 
