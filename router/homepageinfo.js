@@ -26,14 +26,13 @@ const homepageinfoHandler = require('../router_handler/homepageinfo')
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * "status": true,
- *  "data": [
- *      {
- *          "id": 1,
- *          "year": 2021,
- *          "title": "2021年第十六届xxxx",
- *          "date": "2021-07"
- *      },
- *  ]
+ *  "data": {
+ *      "1979": [
+ *          "test"
+ *      ],
+ *      "2021": [
+ *          "xxxx"
+ *      ],
  * }
  * 
  */

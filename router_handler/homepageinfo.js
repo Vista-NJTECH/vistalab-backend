@@ -4,12 +4,29 @@ const config = require('../config')
 const image_utils = require("../utils/image_utils")
 
 exports.getAchievement = (req, res) => {
-    const sql = `select id, year, title, date from achievement_info`
+    const sql = `select year, title from achievement_info`
     db.query(sql, function (err, results) {
       if (err) return res.cc(err)
+      var years = []
+      var awards = {}
+
+      for(let i in results){
+        if(!years.includes(results[i].year)){
+          years.push(results[i].year)
+          awards[results[i].year] = []
+        }
+      }
+      for(let i in results){
+        for(let j in years){
+          if(results[i].year == years[j]){
+            awards[years[j]].push(results[i].title)
+          }
+        }
+      }
+      console.log(awards)
       res.send({
         status: true,
-        data: results,
+        data: awards,
       })
     })
 }
