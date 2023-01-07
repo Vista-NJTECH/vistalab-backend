@@ -48,10 +48,13 @@ exports.getall = (req, res) => {
   }
   db.query(sql, [req.query.class, req.query.subclass], function(err, results) {
     if (err) return res.cc(err)
+    for (let i in results){
+      delete results[i].base64
+    }
     res.send({
       status: true,
       data: results,
-      prefix: config.url_prefix,
+      //prefix: config.url_prefix,
     })
 
   })

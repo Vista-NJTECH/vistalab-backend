@@ -44,7 +44,7 @@ const userinfoHandler = require('../router_handler/userinfo')
 router.get('/userinfo', userinfoHandler.getUserInfo)
 /**
  * 
- * @api {post} /api/updateavatar 用户头像更新
+ * @api {post} /my/updateavatar 用户头像更新
  * @apiName 用户头像更新
  * @apiGroup 用户
  * @apiDescription 更新用户头像

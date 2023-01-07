@@ -8,4 +8,24 @@ router.use('/', require('./homepageinfo'));
 
 router.use('/', require('./user'));
 
+/**
+ * 
+ * @api {get} /api/getimg 通用获取图片
+ * @apiName  通用获取图片base64
+ * @apiGroup 通用
+ * @apiDescription  获取图片base64
+ * @apiVersion  1.0.0
+ * 
+ * @apiBody {String} id
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "base64": "data:image/png;base64,hrshb6terhwvbyejke665hbdf="
+ * }
+ * 
+ */
+router.get('/getimg', commonapiHandler.getimg)
+
 module.exports = router
