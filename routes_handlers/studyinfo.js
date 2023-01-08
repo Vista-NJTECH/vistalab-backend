@@ -6,9 +6,11 @@ const {studyinfo_schema} = require("../schema/studyinfo")
 
 const {deleteImg, saveImg} = require("../utils/image_utils")
 
+const {checkPermission} = require("../utils/user_utils")
+
 exports.delete = async (req, res) => {
-  const myQuery = `select level from user_info where id= ?`
-  let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
+  const myQuery = `select p_group from study_ins where id= ?`
+  let results = await new Promise((resolve, reject) => db.query(myQuery, req.body.id, async (err, results) => {
     if (err) {
       deleteImg(req.file.path)
       reject(err)
@@ -17,12 +19,8 @@ exports.delete = async (req, res) => {
       resolve(results);
     }
   }));
-  if(!results[0]){
-    deleteImg(req.file.path)
-    return res.cc("没有您的注册记录!")
-  }
-  if(results[0].level > 1){
-    deleteImg(req.file.path)
+  if((!await checkPermission(req.auth.id, results[0].p_group)) && 
+  (!await checkPermission(req.auth.id, "admin"))){
     return res.cc("您没有权限删除!")
   }
 
@@ -103,7 +101,7 @@ exports.add = async (req, res) => {
   } catch (err) {
     return res.cc(err)
   }
-  const myQuery = `select name, level from user_info where id= ?`
+  const myQuery = `select username from user_info where id= ?`
   let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
     if (err) {
       deleteImg(req.file.path)
@@ -113,15 +111,14 @@ exports.add = async (req, res) => {
       resolve(results);
     }
   }));
-  if(!results[0]){
-    deleteImg(req.file.path)
-    return res.cc("没有您的注册记录!")
-  }
-  if(results[0].level > 1){
+  
+  if((!await checkPermission(req.auth.id, "studya")) && 
+  (!await checkPermission(req.auth.id, "admin"))){
     deleteImg(req.file.path)
     return res.cc("您没有权限上传!")
   }
   const uploader_id = req.auth.id
+  const uploader_group = results[0].username
   if(!req.file){
     img_path = "public/src/default.png";
     const sql = 'insert into study_info set ?'
@@ -132,6 +129,7 @@ exports.add = async (req, res) => {
         title: req.body.title,
         img_id: 1,
         uploader_id: uploader_id,
+        s_group : uploader_group,
         tags: req.body.tags,
       }, function (err, results) {
           if (err){
@@ -170,6 +168,7 @@ exports.add = async (req, res) => {
           title: req.body.title, 
           img_id: results.insertId,
           uploader_id: uploader_id,
+          s_group : uploader_group,
           tags: req.body.tags,
         }, function (err, results) {
             if (err){
@@ -186,8 +185,8 @@ exports.add = async (req, res) => {
 
 
 exports.update = async (req, res) => {
-  const myQuery = `select level from user_info where id= ?`
-  let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
+  const myQuery = `select s_group from study_info where id= ?`
+  let results = await new Promise((resolve, reject) => db.query(myQuery, req.body.id, async (err, results) => {
     if (err) {
       deleteImg(req.file.path)
       reject(err)
@@ -196,14 +195,10 @@ exports.update = async (req, res) => {
       resolve(results);
     }
   }));
-  if(!results[0]){
-    deleteImg(req.file.path)
-    return res.cc("没有您的注册记录!")
-  }
-  if(results[0].level > 1){
-    deleteImg(req.file.path)
-    return res.cc("您没有权限更新!")
-  }
+  
+  if((!await checkPermission(req.auth.id, results[0].s_group)) && 
+  (!await checkPermission(req.auth.id, "admin"))) return res.cc("您没有权限更新!")
+ 
   // 不更新图片的情况
   if(!req.file){
     const sql = `UPDATE study_info SET ? WHERE id = ?`

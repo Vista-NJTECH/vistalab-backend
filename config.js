@@ -19,7 +19,9 @@ module.exports.studyinfo = {
 }
 
 module.exports.userinfo = {
-  default_avatar: "public/src/default_avatar_resized.png",}
+  default_avatar: "public/src/default_avatar_resized.png",
+  basic_permission: "common"
+}
 
 module.exports.deploy = {
   port: 8180,
