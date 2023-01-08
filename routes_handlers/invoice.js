@@ -23,7 +23,7 @@ exports.add = async (req, res) => {
     if(!invoiceIns.detailList[0]){
         res.cc("后端失效!")
     }
-    const sql_user = `select name from user_info where id= ? `
+    const sql_user = `select name from user_info where id= ?`
     db.query(sql_user, req.auth.id, function (err, results) {
         if (err) return res.cc(err)
         const sql = 'insert into invoice_info set ?'

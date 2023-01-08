@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
   })
 const upload = multer({storage})
 
-const homepageinfoHandler = require('../router_handler/homepageinfo')
+const homepageinfoHandler = require('../../routes_handlers/homepageinfo')
 
 /**
  * 

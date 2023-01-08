@@ -25,49 +25,12 @@ app.use(function (req, res, next) {
   next()
 })
 
-/**********************************
-// token中间件过滤-弃用
-***********************************/
-
-const { expressjwt: jwt } = require('express-jwt')
-app.use(jwt({ 
-  secret: config.jwtSecretKey,
-  algorithms: ["HS256"]
-}).unless({ path: [/^\/api\//,/^\/study\//,/^\/schedule\//,/^\/member\//,/^\/apidoc\//,/^\/public\//,/^\/activity\//,/^\/competition\//]}))
-
 ////////////////////////////////////////////////////////////////////
-// 路由
 
 //解析表单中间件
 app.use(express.urlencoded({extended: false}))
 
-// 托管静态资源文件
-app.use(express.static(path.join(__dirname,'public')));
-
-/////////////
-const commonapi_router = require('./router/commonapi')
-app.use('/api', commonapi_router)
-
-const competitioninfo_router = require('./router/competition-info')
-app.use('/competition', competitioninfo_router)
-
-const activityinfo_router = require('./router/activityinfo')
-app.use('/activity', activityinfo_router)
-
-const studyinfo_router = require('./router/studyinfo')
-app.use('/study', studyinfo_router)
-
-const userinfo_router = require('./router/userinfo')
-app.use('/my', userinfo_router)
-
-const scheduleinfo_router = require('./router/scheduleinfo')
-app.use('/schedule', scheduleinfo_router)
-
-const memberinfo_router = require('./router/memberinfo')
-app.use('/member', memberinfo_router)
-
-const invoice_router = require('./router/invoice')
-app.use('/invoice', invoice_router)
+app.use('/', require('./routes/index'))
 
 ////////////////////////////////////////////////////////////////////
 app.use('/apidoc', express.static('apidoc'));

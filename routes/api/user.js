@@ -1,12 +1,8 @@
 const express = require('express')
 const router = express.Router()
-
-// 导入用户路由处理函数模块
-const userHandler = require('../router_handler/user')
-
-// 表单验证模块
+const userHandler = require('../../routes_handlers/user')
 const expressJoi = require('@escook/express-joi')
-const { reg_login_schema } = require('../schema/user')
+const { reg_login_schema } = require('../../schema/user')
 
 /**
  * 

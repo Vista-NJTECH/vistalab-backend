@@ -22,7 +22,9 @@ exports.facelogin = async (req, res) => {
         if(resp.status != 200){
             res.cc("登录失败!")
         }
-
+        fs.unlink(req.file.path,function(err){
+            if(err) return res.cc(err)
+        })
         //console.log(resp.status)
     const sql = `select id, password, username, name, email, avatar, level, created_time from user_info where name=?`
     db.query(sql, resp.data, function (err, results) {
@@ -40,12 +42,24 @@ exports.facelogin = async (req, res) => {
 
         //res.cookie("token",'vista ' + tokenStr,{maxAge:config.cookieage,httpOnly:true});
 
-        res.send({
-        status: true,
-        message: '登录成功！',
-        userinfo : user,
-        token: 'Bearer ' + tokenStr,
+        const sql = 'insert into login_log set ?'
+        db.query(sql, { 
+            name: user.name, 
+            u_id: user.id, 
+            way: "face",
+        }, function (err, noresults) {
+            if (err){
+              return res.cc(err)
+            }
+            res.send({
+                status: true,
+                message: '登录成功！',
+                userinfo : user,
+                token: 'Bearer ' + tokenStr,
+                })
         })
+
+        
     })
     
     } catch (error) {

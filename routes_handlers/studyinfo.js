@@ -90,6 +90,29 @@ exports.add = async (req, res) => {
   } catch (err) {
     return res.cc(err)
   }
+  const myQuery = `select name, level from user_info where id= ?`
+  let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
+    if (err) {
+      fs.unlink(req.file.path,function(error){})
+      reject(err)
+      return res.cc(err)
+    } else {
+      resolve(results);
+    }
+  }));
+  if(!results[0]){
+    fs.unlink(req.file.path,function(error){})
+    return res.cc("没有您的注册记录!")
+  }
+  if(results[0].level > 1){
+    fs.unlink(req.file.path,function(error){
+      if(error){
+        return res.cc(error)
+      }
+    })
+    return res.cc("您没有权限上传!")
+  }
+  const uploader_id = req.auth.id
   if(!req.file){
     img_path = "public/src/default.png";
     const sql = 'insert into study_info set ?'
@@ -99,6 +122,7 @@ exports.add = async (req, res) => {
         coursename: req.body.coursename, 
         title: req.body.title,
         img_id: 1,
+        uploader_id: uploader_id,
         tags: req.body.tags,
       }, function (err, results) {
           if (err){
@@ -136,6 +160,7 @@ exports.add = async (req, res) => {
           coursename: req.body.coursename, 
           title: req.body.title, 
           img_id: results.insertId,
+          uploader_id: uploader_id,
           tags: req.body.tags,
         }, function (err, results) {
             if (err){
@@ -151,6 +176,28 @@ exports.add = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
+  const myQuery = `select name, level from user_info, study_info where (img_info.id = study_info.img_id and study_info.classification = ?)`
+  let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
+    if (err) {
+      fs.unlink(req.file.path,function(error){})
+      reject(err)
+      return res.cc(err)
+    } else {
+      resolve(results);
+    }
+  }));
+  if(!results[0]){
+    fs.unlink(req.file.path,function(error){})
+    return res.cc("没有您的注册记录!")
+  }
+  if(results[0].level > 1){
+    fs.unlink(req.file.path,function(error){
+      if(error){
+        return res.cc(error)
+      }
+    })
+    return res.cc("您没有权限上传!")
+  }
   // 不更新图片的情况
   if(!req.file){
     const sql = `UPDATE study_info SET ? WHERE id = ?`

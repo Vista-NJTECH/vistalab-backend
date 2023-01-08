@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
-
 const multer = require('multer')
+var { expressjwt: jwt } = require("express-jwt");
+const config = require('../../config')
 
 const storage = multer.diskStorage({
     destination(req, file, cb){
@@ -14,7 +15,7 @@ const storage = multer.diskStorage({
   })
 const upload = multer({storage})
 
-const studyinfoHandler = require('../router_handler/studyinfo')
+const studyinfoHandler = require('../../routes_handlers/studyinfo')
 /**
  * 
  * @api {get} /study/getall 课程信息获取
@@ -48,7 +49,8 @@ const studyinfoHandler = require('../router_handler/studyinfo')
  *          "img_id": 1,
  *          "state": 1,
  *          "level": 1,
- *          "tags": "bilibili"
+ *          "tags": "bilibili",
+ *          "uploader": "JerryGu",
  *      },],
  *  prefix: url_prefix,
  * }
@@ -92,6 +94,8 @@ router.get('/getcategory', studyinfoHandler.getcategory)
  * @apiDescription  添加课程信息
  * @apiVersion  1.0.0
  * 
+ * @apiHeader {String} Authorization token
+ * 
  * @apiBody {File}      [studyimg]      课程章节预览图
  * @apiBody {String}    classification  一级分类
  * @apiBody {String}    coursename      课程名
@@ -103,13 +107,27 @@ router.get('/getcategory', studyinfoHandler.getcategory)
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
- * {
- *  "status": true,
- *  "message": "上传成功!"
- * }
+*      {
+*       "status": true,
+*       "message": "上传成功!"
+*      }
+ * 
+ * @apiErrorExample {json} Error-Response:
+ *     {
+ *      "status": false,
+ *      "message": "您没有权限上传!"
+ *     }
+ * @apiErrorExample {json} Error-Response:
+ *     {
+ *      "status": false,
+ *      "message": "没有您的注册记录!"
+ *     }
  * 
  */
-router.post('/add', upload.single('studyimg'), studyinfoHandler.add)
+router.post('/add', upload.single('studyimg'), jwt({ 
+    secret: config.jwtSecretKey, 
+    algorithms: ["HS256"] 
+  }), studyinfoHandler.add)
 /**
  * 
  * @api {post} /study/delete 课程删除
@@ -117,6 +135,8 @@ router.post('/add', upload.single('studyimg'), studyinfoHandler.add)
  * @apiGroup Study
  * @apiDescription  删除课程信息
  * @apiVersion  1.0.0
+ * 
+ * @apiHeader {String} Authorization token
  * 
  * @apiBody {String}    id  课程id
  * 
@@ -128,7 +148,10 @@ router.post('/add', upload.single('studyimg'), studyinfoHandler.add)
  * }
  * 
  */
-router.post('/delete', studyinfoHandler.delete)
+router.post('/delete', jwt({ 
+        secret: config.jwtSecretKey, 
+        algorithms: ["HS256"] 
+    }), studyinfoHandler.delete)
 /**
  * 
  * @api {post} /study/add 课程更新
@@ -136,6 +159,8 @@ router.post('/delete', studyinfoHandler.delete)
  * @apiGroup Study
  * @apiDescription  更新课程信息
  * @apiVersion  1.0.0
+ * 
+ * @apiHeader {String} Authorization token
  * 
  * @apiBody {String}    id              课程章节预览图
  * @apiBody {File}      [studyimg]      课程章节预览图
@@ -155,6 +180,9 @@ router.post('/delete', studyinfoHandler.delete)
  * }
  * 
  */
-router.post('/update', upload.single('studyimg'), studyinfoHandler.update)
+router.post('/update', upload.single('studyimg'), jwt({ 
+    secret: config.jwtSecretKey, 
+    algorithms: ["HS256"] 
+  }), studyinfoHandler.update)
 
 module.exports = router

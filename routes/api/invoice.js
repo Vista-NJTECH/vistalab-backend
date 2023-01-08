@@ -1,10 +1,8 @@
 const express = require('express')
 const router = express.Router()
-
-
-const invoiceHandler = require('../router_handler/invoice')
-
 const multer = require('multer')
+
+const invoiceHandler = require('../../routes_handlers/invoice')
 
 const storage = multer.diskStorage({
     destination(req, file, cb){

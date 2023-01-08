@@ -1,10 +1,9 @@
 const express = require('express')
 const router = express.Router()
-
-// 导入用户路由处理函数模块
-const activityinfoHandler = require('../router_handler/activityinfo')
-
 const multer = require('multer')
+
+const activityinfoHandler = require('../../routes_handlers/activityinfo')
+
 
 const storage = multer.diskStorage({
     destination(req, file, cb){

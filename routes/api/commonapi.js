@@ -2,13 +2,15 @@ const express = require('express')
 const router = express.Router()
 
 // 导入用户路由处理函数模块
-const commonapiHandler = require('../router_handler/commonapi')
+const commonapiHandler = require('../../routes_handlers/commonapi')
+
+router.use('/', require('./testapi'));
 
 router.use('/', require('./homepageinfo'));
 
 router.use('/', require('./user'));
 
-router.use('/', require('./machine-learning/face'));
+router.use('/', require('../machine-learning/face'));
 
 /**
  * 

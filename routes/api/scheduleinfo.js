@@ -1,8 +1,10 @@
 const express = require('express')
 const router = express.Router()
+var { expressjwt: jwt } = require("express-jwt");
+const config = require('../../config')
 
-// 导入用户路由处理函数模块
-const scheduleHandler = require('../router_handler/scheduleinfo')
+const scheduleHandler = require('../../routes_handlers/scheduleinfo')
+
 /**
  * 
  * @api {get} /schedule/getall 日程信息获取
@@ -33,7 +35,7 @@ const scheduleHandler = require('../router_handler/scheduleinfo')
  * }
  * 
  */
-router.get('/getall', scheduleHandler.getall)
+router.get('/api/getall', jwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] }),scheduleHandler.getall)
 /**
  * 
  * @api {post} /schedule/delete 日程删除

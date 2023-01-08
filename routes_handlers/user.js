@@ -62,11 +62,21 @@ exports.login = (req, res) => {
 
     //res.cookie("token",'vista ' + tokenStr,{maxAge:config.cookieage,httpOnly:true});
 
-    res.send({
-      status: true,
-      message: '登录成功！',
-      userinfo : user,
-      token: 'Bearer ' + tokenStr,
-    })
+    const sql = 'insert into login_log set ?'
+        db.query(sql, { 
+            name: user.name, 
+            u_id: user.id, 
+            way: "pwd",
+        }, function (err, noresults) {
+            if (err){
+              return res.cc(err)
+            } 
+            res.send({
+                status: true,
+                message: '登录成功！',
+                userinfo : user,
+                token: 'Bearer ' + tokenStr,
+                })
+        })
   })
 }

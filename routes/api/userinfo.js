@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
  })
 const upload = multer({storage})
 
-const userinfoHandler = require('../router_handler/userinfo')
+const userinfoHandler = require('../../routes_handlers/userinfo')
 /**
  * 
  * @api {get} /my/userinfo 用户信息

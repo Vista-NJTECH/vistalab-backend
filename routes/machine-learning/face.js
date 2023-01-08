@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const faceHandler = require('../../router_handler/machine-learning/face')
+const faceHandler = require('../../routes_handlers/machine-learning/face')
 
 const multer = require('multer')
 
