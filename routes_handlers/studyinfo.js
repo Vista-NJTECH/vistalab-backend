@@ -4,9 +4,28 @@ const config = require('../config')
 
 const {studyinfo_schema} = require("../schema/studyinfo")
 
-const image_utils = require("../utils/image_utils")
+const {deleteImg, saveImg} = require("../utils/image_utils")
 
 exports.delete = async (req, res) => {
+  const myQuery = `select level from user_info where id= ?`
+  let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
+    if (err) {
+      deleteImg(req.file.path)
+      reject(err)
+      return res.cc(err)
+    } else {
+      resolve(results);
+    }
+  }));
+  if(!results[0]){
+    deleteImg(req.file.path)
+    return res.cc("没有您的注册记录!")
+  }
+  if(results[0].level > 1){
+    deleteImg(req.file.path)
+    return res.cc("您没有权限删除!")
+  }
+
   const sqly = `select * from img_info, study_info where (img_info.id = study_info.img_id and study_info.id = ?)`
   await db.query(sqly, req.body.id, function(err, results) {
     //console.log(results[0])
@@ -78,13 +97,7 @@ exports.add = async (req, res) => {
   try {
     const validation = await studyinfo_schema.validate(req.body)
     if(validation.error){
-      if(req.file.path){
-        fs.unlink(req.file.path,function(error){
-          if(error){
-            return res.cc(error)
-          }
-        })
-      }
+      deleteImg(req.file.path)
       return res.cc(validation.error)
     }
   } catch (err) {
@@ -93,7 +106,7 @@ exports.add = async (req, res) => {
   const myQuery = `select name, level from user_info where id= ?`
   let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
     if (err) {
-      fs.unlink(req.file.path,function(error){})
+      deleteImg(req.file.path)
       reject(err)
       return res.cc(err)
     } else {
@@ -101,15 +114,11 @@ exports.add = async (req, res) => {
     }
   }));
   if(!results[0]){
-    fs.unlink(req.file.path,function(error){})
+    deleteImg(req.file.path)
     return res.cc("没有您的注册记录!")
   }
   if(results[0].level > 1){
-    fs.unlink(req.file.path,function(error){
-      if(error){
-        return res.cc(error)
-      }
-    })
+    deleteImg(req.file.path)
     return res.cc("您没有权限上传!")
   }
   const uploader_id = req.auth.id
@@ -136,7 +145,7 @@ exports.add = async (req, res) => {
 
   }else{
     img_path = req.file.path
-    const imgInfo = await image_utils.saveImg(req)
+    const imgInfo = await saveImg(req)
     const sql = 'insert into img_info set ?'
     db.query(sql, { 
       path: img_path, 
@@ -175,11 +184,12 @@ exports.add = async (req, res) => {
     }
 }
 
+
 exports.update = async (req, res) => {
-  const myQuery = `select name, level from user_info where id= ?`
+  const myQuery = `select level from user_info where id= ?`
   let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
     if (err) {
-      fs.unlink(req.file.path,function(error){})
+      deleteImg(req.file.path)
       reject(err)
       return res.cc(err)
     } else {
@@ -187,16 +197,12 @@ exports.update = async (req, res) => {
     }
   }));
   if(!results[0]){
-    fs.unlink(req.file.path,function(error){})
+    deleteImg(req.file.path)
     return res.cc("没有您的注册记录!")
   }
   if(results[0].level > 1){
-    fs.unlink(req.file.path,function(error){
-      if(error){
-        return res.cc(error)
-      }
-    })
-    return res.cc("您没有权限上传!")
+    deleteImg(req.file.path)
+    return res.cc("您没有权限更新!")
   }
   // 不更新图片的情况
   if(!req.file){
@@ -220,11 +226,7 @@ exports.update = async (req, res) => {
     try {
       const validation = await studyinfo_schema.validate(req.body)
       if(validation.error){
-        fs.unlink(req.file.path,function(err){
-          if(err){
-            return res.cc(err)
-          }
-        })
+        deleteImg(req.file.path)
         return res.cc(validation.error)
       }
     } catch (err) {
@@ -232,15 +234,11 @@ exports.update = async (req, res) => {
     }
   
     const sqly = `select * from img_info, study_info where (img_info.id = study_info.img_id and study_info.id = ?)`
-    await db.query(sqly, req.body.id, function(err, results) {
+    db.query(sqly, req.body.id, function(err, results) {
       //console.log(results[0])
       if (err) return res.cc(err)
       if(!results[0]) {
-        fs.unlink(req.file.path,function(err){
-          if(err){
-            return res.cc(err)
-          }
-        })
+        deleteImg(req.file.path)
         return res.cc("没有可删除记录")
       }
 
@@ -248,11 +246,7 @@ exports.update = async (req, res) => {
         results[0].img_id = 0
       }
       else {
-        fs.unlink(results[0].path,function(error){
-          if(error){
-            return res.cc(error)
-          }
-        })
+        deleteImg(req.file.path)
       }
       
       //////////////////////////////////////////// 不管同步异步了，我直接嵌套
@@ -267,18 +261,14 @@ exports.update = async (req, res) => {
         try {
           const validation = await studyinfo_schema.validate(req.body)
           if(validation.error){
-            fs.unlink(req.file.path,function(error){
-              if(error){
-                return res.cc(error)
-              }
-            })
+            deleteImg(req.file.path)
             return res.cc(validation.error)
           }
         } catch (err) {
           return res.cc(err)
         }
 
-        const imgInfo = await image_utils.saveImg(req)
+        const imgInfo = await saveImg(req)
 
         const sql = 'insert into img_info set ?'
         db.query(sql, { 
@@ -313,14 +303,7 @@ exports.update = async (req, res) => {
                 return res.cc('更新成功!', true)
             })
         })
-
-        
-        
-        //----------------------------------------------------------
-
       })
-  ////////////////////////////////////////////
     })  
   }
-  
 }

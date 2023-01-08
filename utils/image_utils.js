@@ -78,3 +78,9 @@ module.exports.saveImg = async function (req, resize = {}){
       info: info
     }
   }
+
+  module.exports.deleteImg = async function (){
+    if(path){
+      fs.unlink(req.file.path,function(error){})
+    }
+  }
