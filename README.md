@@ -39,7 +39,7 @@ npm install apidoc -g
 ```
 ## Generate Doc Html
 ```shell
-~/projects/web$ apidoc -i router/ -o apidoc/
+~/projects/web$ apidoc -i routes/ -o apidoc/
 ```
 
 ## Config
