@@ -1,6 +1,6 @@
-const {checkPermission} = require("../utils/user_utils")
+const {checkPermission, addPermission} = require("../utils/user_utils")
+
 exports.getPreview = async (req, res) => {
-    const a = await checkPermission(1, "all")
-    console.log(a)
-    return a
+    const a = await addPermission(1, "all")
+    return res.send(a)
 }
