@@ -35,7 +35,7 @@ const scheduleHandler = require('../../routes_handlers/scheduleinfo')
  * }
  * 
  */
-router.get('/api/getall', jwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] }),scheduleHandler.getall)
+router.get('/api/getall', scheduleHandler.getall)
 /**
  * 
  * @api {post} /schedule/delete 日程删除

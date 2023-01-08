@@ -39,12 +39,12 @@ exports.delete = async (req, res) => {
 }
 
 exports.getall = (req, res) => {
-  var sql = `select * from img_info, study_info where (img_info.id = study_info.img_id and study_info.classification = ?) order by iindex asc`
+  var sql = `select * from study_ins where classification = ? order by iindex asc`
   if(!(req.query.subclass === undefined)){
-    sql = `select * from img_info, study_info where (img_info.id = study_info.img_id and study_info.classification = ? and study_info.coursename = ?) order by iindex asc`
+    sql = `select * from study_ins where classification = ? and coursename = ? order by iindex asc`
   }
   if(JSON.stringify(req.query) == '{}'){
-    sql = `select * from img_info, study_info where img_info.id = study_info.img_id order by iindex asc`
+    sql = `select * from study_ins order by iindex asc`
   }
   db.query(sql, [req.query.class, req.query.subclass], function(err, results) {
     if (err) return res.cc(err)
@@ -176,7 +176,7 @@ exports.add = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-  const myQuery = `select name, level from user_info, study_info where (img_info.id = study_info.img_id and study_info.classification = ?)`
+  const myQuery = `select name, level from user_info where id= ?`
   let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
     if (err) {
       fs.unlink(req.file.path,function(error){})
