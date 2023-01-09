@@ -131,6 +131,48 @@ router.get('/getrecommend', studyinfoHandler.getRecommend)
 router.get('/getcategory', studyinfoHandler.getcategory)
 /**
  * 
+ * @api {get} /study/getsearch 课程搜索获取
+ * @apiName  课程搜索获取
+ * @apiGroup Study
+ * @apiDescription  搜索课程信息
+ * @apiVersion  1.0.0
+ * 
+ * @apiParam {String} keyword 搜索关键词
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "data": [
+ *      {
+ *          "id": 160,
+ *          "path": "your/file/path.png",
+ *          "size": "3617280",
+ *          "width": "1256",
+ *          "height": "720",
+ *          "blur": "U2S?DV00t6~pITM{xuxuR*Rjxu%M?bRjRjt7",
+ *          "base64": "example",
+ *          "time": "2023-01-04T14:58:55.000Z",
+ *          "iindex": 0,
+ *          "link": "your/link/url",
+ *          "classification": "Software",
+ *          "coursename": "CMake",
+ *          "title": "0.how-a-cpp-file-run",
+ *          "img_id": 1,
+ *          "state": 1,
+ *          "level": 1,
+ *          "tags": "bilibili",
+ *          "uploader": "JerryGu",
+ *      },],
+ *      count: 1,
+ *      pagecount: 1,
+ *  prefix: url_prefix,
+ * }
+ * 
+ */
+router.get('/getsearch', studyinfoHandler.getSearch)
+/**
+ * 
  * @api {post} /study/add 课程添加
  * @apiName  课程添加
  * @apiGroup Study

@@ -146,6 +146,22 @@ exports.getRecommend = (req, res) => {
   })
 }
 
+exports.getSearch = (req, res) => {
+  variable = '%' + req.body.keyword + '%'
+  var sql = `SELECT * FROM study_ins WHERE (title Like ?) or (classification Like ? COLLATE utf8_general_ci) or (coursename Like ? COLLATE utf8_general_ci) LIMIT 10 `
+  db.query(sql, [variable, variable, variable], function(err, results) {
+    if (err) return res.cc(err)
+    res.send({
+      status: true,
+      count: results.length,
+      pagecount: 1,
+      data: results,
+      prefix: config.url_prefix,
+    })
+
+  })
+}
+
 exports.add = async (req, res) => {
   var img_path;
   //------------表单验证-----------
