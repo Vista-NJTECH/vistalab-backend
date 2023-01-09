@@ -57,7 +57,7 @@ exports.delete = async (req, res) => {
 
 exports.getall = async (req, res) => {
 
-  const pagesize = 10
+  const pagesize = 999
   const pagenum =( parseInt(req.query.page) - 1 )* pagesize || 0
 
   var subclass = req.query.subclass || ""
@@ -126,6 +126,21 @@ exports.getcategory = (req, res) => {
     res.send({
       status: true,
       data: results,
+    })
+
+  })
+}
+
+exports.getRecommend = (req, res) => {
+  var sql = `select * from study_ins where status = 2 LIMIT 9`
+  db.query(sql, [], function(err, results) {
+    if (err) return res.cc(err)
+    res.send({
+      status: true,
+      count: results.length,
+      pagecount: 1,
+      data: results,
+      prefix: config.url_prefix,
     })
 
   })

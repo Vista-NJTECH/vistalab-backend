@@ -62,6 +62,46 @@ const studyinfoHandler = require('../../routes_handlers/studyinfo')
 router.get('/getall', studyinfoHandler.getall)
 /**
  * 
+ * @api {get} /study/getrecommend 推荐课程信息获取
+ * @apiName  推荐课程信息获取
+ * @apiGroup Study
+ * @apiDescription  获取推荐课程信息
+ * @apiVersion  1.0.0
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "data": [
+ *      {
+ *          "id": 160,
+ *          "path": "your/file/path.png",
+ *          "size": "3617280",
+ *          "width": "1256",
+ *          "height": "720",
+ *          "blur": "U2S?DV00t6~pITM{xuxuR*Rjxu%M?bRjRjt7",
+ *          "base64": "example",
+ *          "time": "2023-01-04T14:58:55.000Z",
+ *          "iindex": 0,
+ *          "link": "your/link/url",
+ *          "classification": "Software",
+ *          "coursename": "CMake",
+ *          "title": "0.how-a-cpp-file-run",
+ *          "img_id": 1,
+ *          "state": 1,
+ *          "level": 1,
+ *          "tags": "bilibili",
+ *          "uploader": "JerryGu",
+ *      },],
+ *      count: 1,
+ *      pagecount: 1,
+ *  prefix: url_prefix,
+ * }
+ * 
+ */
+router.get('/getrecommend', studyinfoHandler.getRecommend)
+/**
+ * 
  * @api {get} /study/getcategory 课程分类信息获取
  * @apiName  课程分类信息获取
  * @apiGroup Study
