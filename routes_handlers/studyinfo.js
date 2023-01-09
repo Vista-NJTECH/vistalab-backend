@@ -60,17 +60,29 @@ exports.getall = async (req, res) => {
   const pagesize = config.studyinfo.pagesizenum
   const pagenum =( parseInt(req.query.page) - 1 )* pagesize || 0
   groups = 'common'
+  if(req.auth){
+    const myQuery = `select username from user_info where id= ?`
+    let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
+      if (err) {
+        reject(err)
+        return res.cc(err)
+      } else {
+        resolve(results);
+      }
+    }));
+    groups = results[0].username
+  }
   variable = '%' + groups + '%'
 
   var subclass = req.query.subclass || ""
   params = [req.query.class, subclass, variable, pagenum, pagesize]
-  sql = `select * from study_ins where classification = ? and coursename = ? and view_group Like ? order by iindex asc LIMIT ? , ?`
+  sql = `select * from study_ins where classification = ? and coursename = ? and (view_group Like ? || view_group Like "%common%") order by iindex asc LIMIT ? , ?`
   paramscount = [req.query.class, subclass]
   sqlcount = `select count(*) from study_ins where classification = ? and coursename = ?`
 
   if(JSON.stringify(req.query) == '{}'){
     params = [variable, pagenum, pagesize]
-    sql =sql.replace('where classification = ? and coursename = ?','')
+    sql =sql.replace('classification = ? and coursename = ? and','')
     paramscount = []
     sqlcount =sqlcount.replace('where classification = ? and coursename = ?','')
   }else{
@@ -89,7 +101,7 @@ exports.getall = async (req, res) => {
     if(req.query.class == undefined && req.query.subclass == undefined)
     {
       params = [variable, pagenum, pagesize]
-      sql =sql.replace('where classification = ? and coursename = ?','')
+      sql =sql.replace('classification = ? and coursename = ? and','')
       paramscount = []
       sqlcount =sqlcount.replace('where classification = ? and coursename = ?','')
     }
@@ -118,14 +130,27 @@ exports.getall = async (req, res) => {
   })
 }
 
-exports.getcategory = (req, res) => {
-  variable = 'common'
+exports.getcategory = async (req, res) => {
+  groups = 'common'
+  if(req.auth){
+    const myQuery = `select username from user_info where id= ?`
+    let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
+      if (err) {
+        reject(err)
+        return res.cc(err)
+      } else {
+        resolve(results);
+      }
+    }));
+    groups = results[0].username
+  }
+  variable = '%' + groups + '%'
   const classification = req.query.class
   params = [classification, '%' + variable + '%']
-  var sql = `select distinct coursename	from study_info where classification = ? and view_group Like ? order by coursename asc`
+  var sql = `select distinct coursename	from study_info where classification = ? and (view_group Like ? || view_group Like "%common%") order by coursename asc`
   if(JSON.stringify(req.query) == '{}'){
     params = ['%' + variable + '%']
-    sql = `select distinct coursename	from study_info WHERE view_group Like ? order by coursename	asc`
+    sql = `select distinct coursename	from study_info WHERE (view_group Like ? || view_group Like "%common%") order by coursename	asc`
   }
   db.query(sql, params, function(err, results) {
     if (err) return res.cc(err)
