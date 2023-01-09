@@ -1,8 +1,8 @@
-//密码加密模块
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs') //密码加密模块
 const jwt = require('jsonwebtoken')
 const config = require('../config')
 const db = require('../db/index')
+const {addPermission} = require('../utils/user_utils')
 
 exports.register = (req, res) => {
   const userinfo = req.body
@@ -22,14 +22,18 @@ exports.register = (req, res) => {
     userinfo.password = bcrypt.hashSync(userinfo.password, 10)
 
     const sql = 'insert into user_info set ?'
-    db.query(sql, { username: userinfo.username, password: userinfo.password }, function (err, results) {
+    db.query(sql, { 
+      username: userinfo.username, 
+      password: userinfo.password,
+      p_group: userinfo.username
+    }, function (err, results) {
       // 执行 SQL 语句失败
       if (err) return res.cc(err)
       // SQL 语句执行成功，但影响行数不为 1
       if (results.affectedRows !== 1) {
         return res.cc('注册用户失败，请稍后再试！')
       }
-
+      addPermission(results.insertId, config.userinfo.basic_permission)
       return res.cc('注册成功！', true)
     })
 
@@ -40,7 +44,7 @@ exports.register = (req, res) => {
 // 登录的处理函数
 exports.login = (req, res) => {
   const userinfo = req.body
-  const sql = `select id, password, username, name, email, avatar, level, created_time from user_info where username=?`
+  const sql = `select id, password, username, name, email, avatar, level, p_group, created_time from user_info where username=?`
   db.query(sql, userinfo.username, function (err, results) {
     // 执行 SQL 语句失败
     if (err) return res.cc(err)
