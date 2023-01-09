@@ -59,34 +59,36 @@ exports.getall = async (req, res) => {
 
   const pagesize = config.studyinfo.pagesizenum
   const pagenum =( parseInt(req.query.page) - 1 )* pagesize || 0
+  groups = 'common'
+  variable = '%' + groups + '%'
 
   var subclass = req.query.subclass || ""
-  params = [req.query.class, subclass, pagenum, pagesize]
-  sql = `select * from study_ins where classification = ? and coursename = ? order by iindex asc LIMIT ? , ?`
+  params = [req.query.class, subclass, variable, pagenum, pagesize]
+  sql = `select * from study_ins where classification = ? and coursename = ? and view_group Like ? order by iindex asc LIMIT ? , ?`
   paramscount = [req.query.class, subclass]
   sqlcount = `select count(*) from study_ins where classification = ? and coursename = ?`
 
   if(JSON.stringify(req.query) == '{}'){
-    params = [pagenum, pagesize]
+    params = [variable, pagenum, pagesize]
     sql =sql.replace('where classification = ? and coursename = ?','')
     paramscount = []
     sqlcount =sqlcount.replace('where classification = ? and coursename = ?','')
   }else{
     if(req.query.subclass == undefined && req.query.class){
-      params = [req.query.class, pagenum, pagesize]
+      params = [req.query.class, variable, pagenum, pagesize]
       sql =sql.replace('and coursename = ?','')
       paramscount = [req.query.class]
       sqlcount =sqlcount.replace('and coursename = ?','')
     }
     if(req.query.class == undefined && req.query.subclass){
-      params = [req.query.subclass, pagenum, pagesize]
+      params = [req.query.subclass, variable, pagenum, pagesize]
       sql =sql.replace('classification = ? and','')
       paramscount = [req.query.subclass]
       sqlcount =sqlcount.replace('classification = ? and','')
     }
     if(req.query.class == undefined && req.query.subclass == undefined)
     {
-      params = [pagenum, pagesize]
+      params = [variable, pagenum, pagesize]
       sql =sql.replace('where classification = ? and coursename = ?','')
       paramscount = []
       sqlcount =sqlcount.replace('where classification = ? and coursename = ?','')
@@ -117,11 +119,15 @@ exports.getall = async (req, res) => {
 }
 
 exports.getcategory = (req, res) => {
-  var sql = `select distinct coursename	from study_info where classification = ? `
+  variable = 'common'
+  const classification = req.query.class
+  params = [classification, '%' + variable + '%']
+  var sql = `select distinct coursename	from study_info where classification = ? and view_group Like ? order by coursename asc`
   if(JSON.stringify(req.query) == '{}'){
-    sql = `select distinct coursename	from study_info`
+    params = ['%' + variable + '%']
+    sql = `select distinct coursename	from study_info WHERE view_group Like ? order by coursename	asc`
   }
-  db.query(sql, [req.query.class], function(err, results) {
+  db.query(sql, params, function(err, results) {
     if (err) return res.cc(err)
     res.send({
       status: true,
@@ -185,7 +191,7 @@ exports.add = async (req, res) => {
   
   if((!await checkPermission(req.auth.id, "studya")) && 
   (!await checkPermission(req.auth.id, "admin"))){
-    deleteImg(req.file.path)
+    if(req.file) deleteImg(req.file.path)
     return res.cc("您没有权限上传!")
   }
   const uploader_id = req.auth.id
@@ -201,6 +207,7 @@ exports.add = async (req, res) => {
         img_id: 1,
         uploader_id: uploader_id,
         s_group : uploader_group,
+        view_group : config.studyinfo.basic_view_permission + "," + uploader_group,
         tags: req.body.tags,
       }, function (err, results) {
           if (err){
@@ -240,6 +247,7 @@ exports.add = async (req, res) => {
           img_id: results.insertId,
           uploader_id: uploader_id,
           s_group : uploader_group,
+          view_group : config.studyinfo.basic_view_permission,
           tags: req.body.tags,
         }, function (err, results) {
             if (err){

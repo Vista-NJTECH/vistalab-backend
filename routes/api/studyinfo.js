@@ -59,7 +59,11 @@ const studyinfoHandler = require('../../routes_handlers/studyinfo')
  * }
  * 
  */
-router.get('/getall', studyinfoHandler.getall)
+router.get('/getall', jwt({ 
+  secret: config.jwtSecretKey, 
+  algorithms: ["HS256"],
+  credentialsRequired: false,
+}), studyinfoHandler.getall)
 /**
  * 
  * @api {get} /study/getrecommend 推荐课程信息获取
@@ -99,7 +103,11 @@ router.get('/getall', studyinfoHandler.getall)
  * }
  * 
  */
-router.get('/getrecommend', studyinfoHandler.getRecommend)
+router.get('/getrecommend', jwt({ 
+  secret: config.jwtSecretKey, 
+  algorithms: ["HS256"],
+  credentialsRequired: false,
+}), studyinfoHandler.getRecommend)
 /**
  * 
  * @api {get} /study/getcategory 课程分类信息获取
@@ -128,7 +136,11 @@ router.get('/getrecommend', studyinfoHandler.getRecommend)
 }
  * 
  */
-router.get('/getcategory', studyinfoHandler.getcategory)
+router.get('/getcategory', jwt({ 
+  secret: config.jwtSecretKey, 
+  algorithms: ["HS256"],
+  credentialsRequired: false,
+}), studyinfoHandler.getcategory)
 /**
  * 
  * @api {get} /study/getsearch 课程搜索获取
