@@ -8,7 +8,7 @@ exports.getall = (req, res) => {
       if (results.length == 0) return res.cc('获取信息失败！')
       res.send({
         status: true,
-        message: 'success',
+        message: "success",
         data: results,
       })
     })
@@ -29,7 +29,8 @@ exports.add = (req, res) => {
       persons: scheduleIns.persons,
       detail: scheduleIns.detail,
       level: scheduleIns.level,
-      group: group,}, function (err, results) {
+      group: group,
+    }, function (err, results) {
 
   if (err) return res.cc(err)
 
@@ -59,7 +60,8 @@ exports.update = (req, res) => {
     persons: scheduleIns.persons,
     detail: scheduleIns.detail,
     level: scheduleIns.level,
-    group: scheduleIns.group,}, req.body.id], function (err, results) {
+    group: scheduleIns.group,
+  }, req.body.id], function (err, results) {
       if (err){
         return res.cc(err)
       } 
