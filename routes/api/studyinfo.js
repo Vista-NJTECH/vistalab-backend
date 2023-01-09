@@ -24,6 +24,7 @@ const studyinfoHandler = require('../../routes_handlers/studyinfo')
  * @apiDescription  获取课程信息
  * @apiVersion  1.0.0
  * 
+ * @apiParam {String} [page] 页数
  * @apiParam {String} [class] 一级分类
  * @apiParam {String} [subclass] 二级分类
  * 
@@ -52,6 +53,8 @@ const studyinfoHandler = require('../../routes_handlers/studyinfo')
  *          "tags": "bilibili",
  *          "uploader": "JerryGu",
  *      },],
+ *      count: 1,
+ *      pagecount: 2,
  *  prefix: url_prefix,
  * }
  * 
