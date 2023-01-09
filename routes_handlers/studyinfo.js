@@ -57,7 +57,7 @@ exports.delete = async (req, res) => {
 
 exports.getall = async (req, res) => {
 
-  const pagesize = 999
+  const pagesize = config.studyinfo.pagesizenum
   const pagenum =( parseInt(req.query.page) - 1 )* pagesize || 0
 
   var subclass = req.query.subclass || ""
@@ -142,13 +142,12 @@ exports.getRecommend = (req, res) => {
       data: results,
       prefix: config.url_prefix,
     })
-
   })
 }
 
 exports.getSearch = (req, res) => {
   variable = '%' + req.body.keyword + '%'
-  var sql = `SELECT * FROM study_ins WHERE (title Like ?) or (classification Like ? COLLATE utf8_general_ci) or (coursename Like ? COLLATE utf8_general_ci) LIMIT 10 `
+  var sql = `SELECT * FROM study_ins WHERE (title Like ? COLLATE utf8_general_ci) or (classification Like ?) or (coursename Like ?) LIMIT 10`
   db.query(sql, [variable, variable, variable], function(err, results) {
     if (err) return res.cc(err)
     res.send({
@@ -158,7 +157,6 @@ exports.getSearch = (req, res) => {
       data: results,
       prefix: config.url_prefix,
     })
-
   })
 }
 

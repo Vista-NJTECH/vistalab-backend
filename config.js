@@ -15,7 +15,8 @@ module.exports.db = {
 
 module.exports.studyinfo = {
   base64SavePath: "public/uploads/base64Url/",
-  maxSize: 5000000
+  maxSize: 5000000,
+  pagesizenum : 9
 }
 
 module.exports.userinfo = {
@@ -24,6 +25,6 @@ module.exports.userinfo = {
 }
 
 module.exports.deploy = {
-  port: 8181,
-  host: 'db'
+  port: 8180,
+  host: 'localhost'
 }
