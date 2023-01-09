@@ -9,7 +9,7 @@ const {deleteImg, saveImg} = require("../utils/image_utils")
 const {checkPermission} = require("../utils/user_utils")
 
 exports.delete = async (req, res) => {
-  const myQuery = `select p_group from study_ins where id= ?`
+  const myQuery = `select s_group from study_info where id= ?`
   let results = await new Promise((resolve, reject) => db.query(myQuery, req.body.id, async (err, results) => {
     if (err) {
       deleteImg(req.file.path)
@@ -19,7 +19,7 @@ exports.delete = async (req, res) => {
       resolve(results);
     }
   }));
-  if((!await checkPermission(req.auth.id, results[0].p_group)) && 
+  if((!await checkPermission(req.auth.id, results[0].s_group)) && 
   (!await checkPermission(req.auth.id, "admin"))){
     return res.cc("您没有权限删除!")
   }

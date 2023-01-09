@@ -3,6 +3,7 @@ const fs = require('fs');
 const axios = require('axios')
 const db = require('../db/index')
 const config = require('../config')
+const {checkPermission} = require('../utils/user_utils')
 
 exports.add = async (req, res) => {
     const url = 'http://invoice.heycore.com/invoice/extrat'
