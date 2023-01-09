@@ -54,9 +54,15 @@ exports.add = async (req, res) => {
     
 }
 
-exports.getall = (req, res) => {
-    const sql = `select * from invoice_info`
-    db.query(sql, function (err, results) {
+exports.getall = async (req, res) => {
+    var sql
+    if(await checkPermission(req.auth.id, "admin")){
+        sql = `select * from invoice_ins`
+    }else{
+        sql = `select * from invoice_ins where applicant_id = ?`
+    }
+
+    db.query(sql, req.auth.id, function (err, results) {
       if (err) return res.cc(err)
       res.send({
         status: true,
@@ -83,25 +89,20 @@ exports.delete = (req, res) => {
 }
 
 exports.unstate = (req, res) => {
-    const sql_user = `select applicant_id, path from invoice_info where id= ?`
-    db.query(sql_user, req.body.id, function (err, results) {
+    const sql_user = `select i_group, path from invoice_ins where id= ?`
+    db.query(sql_user, req.body.id, async function (err, results) {
         if (err) return res.cc(err)
         if (results.length !== 1) return res.cc('id错误!')
-        const sql_level = `select level from user_info where id= ?`
-        db.query(sql_level, req.auth.id, function (err, results) {
-            if(err) return res.cc(err)
-            if(results[0].level!=0 && results[0].applicant_id != req.auth.id) return res.cc('您没有权限修改!')
-
-            const sql_state = `select state from invoice_info WHERE id = ?`
-            db.query(sql_state, req.body.id, function (err, results) {
-                if (err) return res.cc(err)
-                const state = results[0].state
-                const sql = `UPDATE invoice_info SET state = ? WHERE id = ?`
-                db.query(sql, [(state == 1) ? 0 : 1, req.body.id], function (err, results) {
-                    if (err)return res.cc(err)
-                    if (results.affectedRows !== 1) return res.cc("更新数据库invoice_info失败!")
-                    return res.cc('发票状态更新成功!', true)
-                })
+        if(!(await checkPermission(req.auth.id, results[0].i_group)) && !(await checkPermission(req.auth.id, "admin"))) return res.cc('您没有权限删除!')
+        const sql_state = `select state from invoice_info WHERE id = ?`
+        db.query(sql_state, req.body.id, function (err, results) {
+            if (err) return res.cc(err)
+            const state = results[0].state
+            const sql = `UPDATE invoice_info SET state = ? WHERE id = ?`
+            db.query(sql, [(state == 1) ? 0 : 1, req.body.id], function (err, results) {
+                if (err)return res.cc(err)
+                if (results.affectedRows !== 1) return res.cc("更新数据库invoice_info失败!")
+                return res.cc('发票状态更新成功!', true)
             })
         })
     })
