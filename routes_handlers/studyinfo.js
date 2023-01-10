@@ -59,9 +59,9 @@ exports.getall = async (req, res) => {
 
   const pagesize = config.studyinfo.pagesizenum
   const pagenum =( parseInt(req.query.page) - 1 )* pagesize || 0
-  groups = 'common'
+  variable = "common"
   if(req.auth){
-    const myQuery = `select username from user_info where id= ?`
+    const myQuery = `select p_group from user_info where id= ?`
     let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
       if (err) {
         reject(err)
@@ -70,13 +70,12 @@ exports.getall = async (req, res) => {
         resolve(results);
       }
     }));
-    groups = results[0].username
+    variable = results[0].p_group
   }
-  variable = '%' + groups + '%'
 
   var subclass = req.query.subclass || ""
   params = [req.query.class, subclass, variable, pagenum, pagesize]
-  sql = `select * from study_ins where classification = ? and coursename = ? and (view_group Like ? || view_group Like "%common%") order by iindex asc LIMIT ? , ?`
+  sql = `select * from study_ins where classification = ? and coursename = ? and ((select concat(study_ins.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) order by iindex asc LIMIT ? , ?`
   paramscount = [req.query.class, subclass]
   sqlcount = `select count(*) from study_ins where classification = ? and coursename = ?`
 

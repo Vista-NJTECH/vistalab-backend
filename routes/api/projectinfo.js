@@ -2,14 +2,14 @@ const express = require('express')
 const router = express.Router()
 const config = require('../../config')
 
-const scheduleHandler = require('../../routes_handlers/scheduleinfo')
+const projectinfoHandler = require('../../routes_handlers/projectinfo')
 
 /**
  * 
- * @api {get} /schedule/getall 日程信息获取
- * @apiName  日程信息获取
+ * @api {get} /project/getall 项目信息获取
+ * @apiName  项目信息获取
  * @apiGroup Schedule
- * @apiDescription  获取日程信息
+ * @apiDescription  获取项目信息
  * @apiVersion  1.0.0
  * 
  * 
@@ -34,16 +34,45 @@ const scheduleHandler = require('../../routes_handlers/scheduleinfo')
  * }
  * 
  */
-router.get('/getall', scheduleHandler.getall)
+router.get('/getall', projectinfoHandler.getall)
 /**
  * 
- * @api {post} /schedule/delete 日程删除
- * @apiName  日程删除
- * @apiGroup Schedule
- * @apiDescription  删除日程信息
+ * @api {get} /study/getcategory 课程分类信息获取
+ * @apiName  课程分类信息获取
+ * @apiGroup Study
+ * @apiDescription  获取一级分类下课程信息信息，无一级分类则输出所有信息
  * @apiVersion  1.0.0
  * 
- * @apiBody {String}    id  日程id
+ * @apiParam {String} [class] 一级分类
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "data": [
+ *      {
+ *          "coursename": "Arduino"
+ *      },
+ *      {
+ *          "coursename": "CMake"
+ *      },
+ *      {
+ *          "coursename": "OpenCV"
+ *      }
+ *  ]
+}
+ * 
+ */
+router.get('/getproject', projectinfoHandler.getProject)
+/**
+ * 
+ * @api {post} /project/delete 项目删除
+ * @apiName  项目删除
+ * @apiGroup Schedule
+ * @apiDescription  删除项目信息
+ * @apiVersion  1.0.0
+ * 
+ * @apiBody {String}    id  项目id
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
@@ -53,13 +82,13 @@ router.get('/getall', scheduleHandler.getall)
  * }
  * 
  */
-router.post('/delete', scheduleHandler.delete)
+router.post('/delete', projectinfoHandler.delete)
 /**
  * 
- * @api {post} /schedule/add 日程添加
- * @apiName  日程添加
+ * @api {post} /project/add 项目添加
+ * @apiName  项目添加
  * @apiGroup Schedule
- * @apiDescription  添加日程信息
+ * @apiDescription  添加项目信息
  * @apiVersion  1.0.0
  * 
  * @apiBody {String}    title  标题
@@ -75,20 +104,20 @@ router.post('/delete', scheduleHandler.delete)
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "message": "添加日程成功!"
+ *  "message": "添加项目成功!"
  * }
  * 
  */
-router.post('/add', scheduleHandler.add)
+router.post('/add', projectinfoHandler.add)
 /**
  * 
- * @api {post} /schedule/update 日程更新
- * @apiName  日程更新
+ * @api {post} /project/update 项目更新
+ * @apiName  项目更新
  * @apiGroup Schedule
- * @apiDescription  更新日程信息
+ * @apiDescription  更新项目信息
  * @apiVersion  1.0.0
  * 
- * @apiBody {String}    id       日程id
+ * @apiBody {String}    id       项目id
  * @apiBody {String}    title  标题
  * @apiBody {String}    date     截止日期
  * @apiBody {String}    host   主持人
@@ -106,6 +135,6 @@ router.post('/add', scheduleHandler.add)
  * }
  * 
  */
-router.post('/update', scheduleHandler.update)
+router.post('/update', projectinfoHandler.update)
 
 module.exports = router
