@@ -31,5 +31,23 @@ router.use('/', require('../machine-learning/face'));
  * 
  */
 router.get('/getimg', commonapiHandler.getimg)
-
+/**
+ * 
+ * @api {get} /api/feedback 反馈信息
+ * @apiName  通用获取反馈信息
+ * @apiGroup Commom
+ * @apiDescription  获取反馈信息
+ * @apiVersion  1.0.0
+ * 
+ * @apiBody {String} text
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "message": "success"
+ * }
+ * 
+ */
+router.get('/feedback', commonapiHandler.feedback)
 module.exports = router

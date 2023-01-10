@@ -8,7 +8,7 @@ const projectinfoHandler = require('../../routes_handlers/projectinfo')
  * 
  * @api {get} /project/getall 项目信息获取
  * @apiName  项目信息获取
- * @apiGroup Schedule
+ * @apiGroup Project
  * @apiDescription  获取项目信息
  * @apiVersion  1.0.0
  * 
@@ -33,10 +33,10 @@ const projectinfoHandler = require('../../routes_handlers/projectinfo')
 router.get('/getall', projectinfoHandler.getall)
 /**
  * 
- * @api {get} /study/getcategory 项目信息获取
- * @apiName  项目信息获取
- * @apiGroup Study
- * @apiDescription  获取项目信息
+ * @api {get} /project/getcategory 项目详细信息获取
+ * @apiName  详细项目信息获取
+ * @apiGroup Project
+ * @apiDescription  获取详细项目信息
  * @apiVersion  1.0.0
  * 
  * @apiHeader {String} [Authorization] token
@@ -70,7 +70,7 @@ router.get('/getproject', projectinfoHandler.getProject)
  * 
  * @api {post} /project/delete 项目删除
  * @apiName  项目删除
- * @apiGroup Schedule
+ * @apiGroup Project
  * @apiDescription  删除项目信息
  * @apiVersion  1.0.0
  * 
@@ -91,7 +91,7 @@ router.post('/delete', projectinfoHandler.delete)
  * 
  * @api {post} /project/add 项目添加
  * @apiName  项目添加
- * @apiGroup Schedule
+ * @apiGroup Project
  * @apiDescription  添加项目信息
  * @apiVersion  1.0.0
  * 
@@ -119,7 +119,7 @@ router.post('/add', projectinfoHandler.add)
  * 
  * @api {post} /project/update 项目更新
  * @apiName  项目更新
- * @apiGroup Schedule
+ * @apiGroup Project
  * @apiDescription  更新项目信息
  * @apiVersion  1.0.0
  * 

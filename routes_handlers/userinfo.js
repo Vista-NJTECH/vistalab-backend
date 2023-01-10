@@ -4,7 +4,7 @@ const config = require('../config')
 
 
 exports.getUserInfo = (req, res) => {
-  const sql = `select id, username, avatar, name, email, level, created_time from user_info where id=?`
+  const sql = `select id, username, avatar, name, email, level, created_time, p_group from user_info where id=?`
   db.query(sql, req.auth.id, (err, results) => {
       if (err) {
         return res.cc(err)

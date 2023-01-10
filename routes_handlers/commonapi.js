@@ -12,3 +12,18 @@ exports.getimg = (req, res) => {
         res.send(results[0].base64)
       })
   }
+
+  exports.feedback = (req, res) => {
+    const sql = 'insert into feedback_log set ?'
+        db.query(sql, { 
+          text: req.body.text,
+        }, function (err, noresults) {
+            if (err){
+              return res.cc(err)
+            } 
+            res.send({
+                status: true,
+                message: '上传成功',
+                })
+        })
+  }
