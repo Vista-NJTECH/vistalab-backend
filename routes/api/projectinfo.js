@@ -12,24 +12,20 @@ const projectinfoHandler = require('../../routes_handlers/projectinfo')
  * @apiDescription  获取项目信息
  * @apiVersion  1.0.0
  * 
+ * @apiHeader {String} [Authorization] token
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "message": "success",
  *  "data": [
  *      {
  *          "id": 1,
- *          "title": "xxxx",
- *          "date": "2023-1-29",
- *          "host": "doiry",
- *          "persons": "Cael",
- *          "detail": "xxxx",
- *          "level": "A",
- *          "group": "all",
- *          "create_time": "2023-01-03T03:29:17.000Z"
- *      },
+ *          "title": "网站建设工作进程",
+ *          "details": "test",
+ *          "view_group": "common, doiry",
+ *          "created_time": "2023-01-09T20:03:00.000Z"
+ *      }
  *  ]
  * }
  * 
@@ -37,13 +33,15 @@ const projectinfoHandler = require('../../routes_handlers/projectinfo')
 router.get('/getall', projectinfoHandler.getall)
 /**
  * 
- * @api {get} /study/getcategory 课程分类信息获取
- * @apiName  课程分类信息获取
+ * @api {get} /study/getcategory 项目信息获取
+ * @apiName  项目信息获取
  * @apiGroup Study
- * @apiDescription  获取一级分类下课程信息信息，无一级分类则输出所有信息
+ * @apiDescription  获取项目信息
  * @apiVersion  1.0.0
  * 
- * @apiParam {String} [class] 一级分类
+ * @apiHeader {String} [Authorization] token
+ * 
+ * @apiParam {String} id 项目id
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
@@ -51,14 +49,18 @@ router.get('/getall', projectinfoHandler.getall)
  *  "status": true,
  *  "data": [
  *      {
- *          "coursename": "Arduino"
+ *          "id": 1,
+ *          "project_id": 1,
+ *          "member_id": 1,
+ *          "current_work": "本周工作",
+ *          "future_plan": "下周工作",
+ *          "remark": "testtesttesttesttesttestt",
+ *          "cycle": 1,
+ *          "create_time": "2023-01-09T20:10:36.000Z",
+ *          "view_group": "cael",
+ *          "title": "网站建设工作进程",
+ *          "details": "test"
  *      },
- *      {
- *          "coursename": "CMake"
- *      },
- *      {
- *          "coursename": "OpenCV"
- *      }
  *  ]
 }
  * 
@@ -71,6 +73,8 @@ router.get('/getproject', projectinfoHandler.getProject)
  * @apiGroup Schedule
  * @apiDescription  删除项目信息
  * @apiVersion  1.0.0
+ * 
+ * @apiHeader {String} [Authorization] token
  * 
  * @apiBody {String}    id  项目id
  * 
@@ -90,6 +94,8 @@ router.post('/delete', projectinfoHandler.delete)
  * @apiGroup Schedule
  * @apiDescription  添加项目信息
  * @apiVersion  1.0.0
+ * 
+ * @apiHeader {String} [Authorization] token
  * 
  * @apiBody {String}    title  标题
  * @apiBody {String}    date     截止日期
