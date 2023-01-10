@@ -24,6 +24,8 @@ const studyinfoHandler = require('../../routes_handlers/studyinfo')
  * @apiDescription  获取课程信息
  * @apiVersion  1.0.0
  * 
+ * @apiHeader {String} Authorization token
+ * 
  * @apiParam {String} [page] 页数
  * @apiParam {String} [class] 一级分类
  * @apiParam {String} [subclass] 二级分类
@@ -72,6 +74,8 @@ router.get('/getall', jwt({
  * @apiDescription  获取推荐课程信息
  * @apiVersion  1.0.0
  * 
+ * @apiHeader {String} Authorization token
+ * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
@@ -116,7 +120,7 @@ router.get('/getrecommend', jwt({
  * @apiDescription  获取一级分类下课程信息信息，无一级分类则输出所有信息
  * @apiVersion  1.0.0
  * 
- * @apiParam {String} [class] 一级分类
+ * @apiHeader {String} Authorization token
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
@@ -124,16 +128,25 @@ router.get('/getrecommend', jwt({
  *  "status": true,
  *  "data": [
  *      {
- *          "coursename": "Arduino"
+ *          "title": "Embedded",
+ *          "data": [
+ *              "Test"
+ *          ]
  *      },
  *      {
- *          "coursename": "CMake"
+ *          "title": "Software",
+ *          "data": [
+ *              "TestGroup"
+ *          ]
  *      },
  *      {
- *          "coursename": "OpenCV"
+ *          "title": "ComputerVision",
+ *          "data": [
+ *              "OpenCV"
+ *          ]
  *      }
  *  ]
-}
+ * }
  * 
  */
 router.get('/getcategory', jwt({ 

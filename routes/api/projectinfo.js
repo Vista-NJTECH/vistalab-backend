@@ -117,6 +117,33 @@ router.post('/delete', projectinfoHandler.delete)
 router.post('/add', projectinfoHandler.add)
 /**
  * 
+ * @api {post} /project/add 项目进度提交
+ * @apiName  项目进度提交
+ * @apiGroup Project
+ * @apiDescription  提交项目进度信息
+ * @apiVersion  1.0.0
+ * 
+ * 
+ * @apiBody {String}    id  项目id
+ * @apiBody {String}    date     截止日期
+ * @apiBody {String}    host   主持人
+ * @apiBody {String}    persons   参与人员
+ * @apiBody {String}    details   详情
+ * @apiBody {String}    [level]   等级
+ * @apiBody {String}    [group]   权限用户组默认all
+ * @apiBody {String}    [state]   状态
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "message": "添加项目成功!"
+ * }
+ * 
+ */
+router.post('/submit', projectinfoHandler.submit)
+/**
+ * 
  * @api {post} /project/update 项目更新
  * @apiName  项目更新
  * @apiGroup Project

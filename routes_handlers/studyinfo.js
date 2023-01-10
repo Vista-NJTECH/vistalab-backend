@@ -130,32 +130,40 @@ exports.getall = async (req, res) => {
 }
 
 exports.getcategory = async (req, res) => {
-  groups = 'common'
+  let groups = "common"
   if(req.auth){
-    const myQuery = `select username from user_info where id= ?`
-    let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
+      const myQuery = `select p_group from user_info where id= ?`
+      let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
       if (err) {
-        reject(err)
-        return res.cc(err)
+          reject(err)
+          return res.cc(err)
       } else {
-        resolve(results);
+          resolve(results);
       }
-    }));
-    groups = results[0].username
+      }));
+      groups = results[0].p_group
   }
-  variable = '%' + groups + '%'
-  const classification = req.query.class
-  params = [classification, '%' + variable + '%']
-  var sql = `select distinct coursename	from study_info where classification = ? and (view_group Like ? || view_group Like "%common%") order by coursename asc`
-  if(JSON.stringify(req.query) == '{}'){
-    params = ['%' + variable + '%']
-    sql = `select distinct coursename	from study_info WHERE (view_group Like ? || view_group Like "%common%") order by coursename	asc`
-  }
+  params = [groups]
+  sql = `select distinct coursename, classification	from study_info WHERE ((select concat(study_info.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) order by coursename asc`
   db.query(sql, params, function(err, results) {
     if (err) return res.cc(err)
+    let data = []
+    let topclass = []
+    for (let i in results){
+      if(topclass.indexOf(results[i].classification) < 0){
+        const temp = {}
+        topclass.push(results[i].classification)
+        temp.title = results[i].classification
+        temp.data = []
+        temp.data.push(results[i].coursename)
+        data.push(temp)
+      }else{
+        data[topclass.indexOf(results[i].classification)].data.push(results[i].coursename)
+      }
+    }
     res.send({
       status: true,
-      data: results,
+      data: data,
     })
 
   })
