@@ -25,14 +25,46 @@ exports.getProject = async (req, res) => {
     }
 
     params = [id, groups]
-    sql = `select * from project_ins where project_ins.project_id = ? AND ((select concat(project_ins.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1)`
+    sql = `select * from project_ins where project_ins.id = ? AND ((select concat(project_ins.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1)`
 
     db.query(sql, params, function(err, results) {
         if (err) return res.cc(err)
-        const count = results.length == 10 ? 10 : results.length
+        /*
+            data = [
+                    {
+                        "cycle1": [
+                            {
+                            },
+                            {
+                            }
+                        ]
+                    },
+                    {
+                        "cycle2": [
+                            {
+                            },
+                            {
+                            }
+                        ]
+                    }
+                ]
+        */
+        let data = []
+        let cycles = []
+        for(let i in results) {
+          if(cycles.indexOf(results[i].cycle) < 0){
+            var tempjson = {}
+            cycles.push(results[i].cycle)
+            tempjson[results[i].cycle] = []
+            tempjson[results[i].cycle].push(results[i])
+            data.push(tempjson)
+          }else{
+            data[cycles.indexOf(results[i].cycle)][results[i].cycle].push(results[i])
+          }
+        };
         res.send({
         status: true,
-        data: results,
+        data: data,
         })
     })
 }
@@ -55,13 +87,34 @@ exports.getall = async (req, res) => {
     params = [groups]
     sql = `select * from project_info where ((select concat(project_info.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1)`
 
-    db.query(sql, params, function(err, results) {
+    db.query(sql, params, async function(err, results) {
+        data = results
         if (err) return res.cc(err)
-        const count = results.length == 10 ? 10 : results.length
+        for(let i in data){
+          ids = data[i].members_id
+          params = [ids]
+          
+          sql = `select name from user_info where ((select concat(user_info.id, ',') regexp concat(replace(?,',',',|'),',')) = 1)`
+          let results2 = await new Promise((resolve, reject) => db.query(sql, params, async (err, results) => {
+            if (err) {
+              reject(err)
+              return res.cc(err)
+            } else {
+              resolve(results);
+            }
+          }));
+          var mambers = ''
+          for(let j in results2){
+            mambers += results2[j].name + " "
+          }
+          delete data[i].member_id
+          data[i].mambers = mambers
+        }
+        
         res.send({
-        status: true,
-        data: results,
-        })
+          status: true,
+          data: data,
+          })
     })
 }
 
@@ -87,6 +140,7 @@ exports.add = async (req, res) => {
         title: req.body.title,
         details: req.body.details,
         members_id: req.auth.id,
+        ddl: req.body.date,
         view_group: groups
     };
   

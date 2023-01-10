@@ -16,16 +16,16 @@ const memberinfoHandler = require('../../routes_handlers/memberinfo')
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
-    "data": [
-        {
-            "id": 1001,
-            "name": "jerryGu",
-            "colleage": "计算机科学与技术学院",
-            "specialty": "计算机科学与技术",
-            "phonenum": "xxxx",
-            "research": "SLAM",
-            "email": "jerrygu.gjw@gmail.com"
-        },
+ *  "data": [
+ *      {
+ *          "id": 1001,
+ *          "name": "jerryGu",
+ *          "colleage": "计算机科学与技术学院",
+ *          "specialty": "计算机科学与技术",
+ *          "phonenum": "xxxx",
+ *          "research": "SLAM",
+ *          "email": "jerrygu.gjw@gmail.com"
+ *      },
  *  ]
  * }
  * 

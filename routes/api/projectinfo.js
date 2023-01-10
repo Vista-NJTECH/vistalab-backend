@@ -95,22 +95,17 @@ router.post('/delete', projectinfoHandler.delete)
  * @apiDescription  添加项目信息
  * @apiVersion  1.0.0
  * 
- * @apiHeader {String} [Authorization] token
+ * @apiHeader {String} Authorization token
  * 
  * @apiBody {String}    title  标题
  * @apiBody {String}    date     截止日期
- * @apiBody {String}    host   主持人
- * @apiBody {String}    persons   参与人员
- * @apiBody {String}    details   详情
- * @apiBody {String}    [level]   等级
- * @apiBody {String}    [group]   权限用户组默认all
- * @apiBody {String}    [state]   状态
+ * @apiBody {String}    details   简介
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "message": "添加项目成功!"
+ *  "message": "success"
  * }
  * 
  */
@@ -164,7 +159,7 @@ router.post('/submit', projectinfoHandler.submit)
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "message": "更新成功!"
+ *  "message": "success"
  * }
  * 
  */
