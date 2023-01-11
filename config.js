@@ -5,7 +5,7 @@ module.exports = {
   expiresIn: '240h',
   cookieage: 15*24*60*60*1000,
   invitation_code: 'vistalab666',
-  url_prefix: 'https://backend.vistalab.top/',
+  url_prefix: 'http://124.223.196.177:8181/',
 }
 
 module.exports.db = {

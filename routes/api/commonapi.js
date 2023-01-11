@@ -49,5 +49,5 @@ router.get('/getimg', commonapiHandler.getimg)
  * }
  * 
  */
-router.get('/feedback', commonapiHandler.feedback)
+router.post('/feedback', commonapiHandler.feedback)
 module.exports = router

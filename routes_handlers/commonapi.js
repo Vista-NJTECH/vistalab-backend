@@ -14,16 +14,18 @@ exports.getimg = (req, res) => {
   }
 
   exports.feedback = (req, res) => {
-    const sql = 'insert into feedback_log set ?'
+    const {text} = req.body
+    if(text == "") return res.cc("不能为空!")
+    const sql = 'insert into feedback set ?'
         db.query(sql, { 
-          text: req.body.text,
+          text: text,
         }, function (err, noresults) {
             if (err){
               return res.cc(err)
             } 
             res.send({
                 status: true,
-                message: '上传成功',
+                message: '提交成功',
                 })
         })
   }
