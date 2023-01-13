@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+var { expressjwt: jwt } = require("express-jwt");
 const config = require('../../config')
 
 const projectinfoHandler = require('../../routes_handlers/projectinfo')
@@ -33,7 +34,11 @@ const projectinfoHandler = require('../../routes_handlers/projectinfo')
  * }
  * 
  */
-router.get('/getall', projectinfoHandler.getall)
+router.get('/getall', jwt({ 
+    secret: config.jwtSecretKey, 
+    algorithms: ["HS256"],
+    credentialsRequired: false,
+  }), projectinfoHandler.getall)
 /**
  * 
  * @api {get} /project/getcategory 项目详细信息获取
@@ -105,7 +110,11 @@ router.get('/getall', projectinfoHandler.getall)
  * }
  * 
  */
-router.get('/getproject', projectinfoHandler.getProject)
+router.get('/getproject', jwt({ 
+    secret: config.jwtSecretKey, 
+    algorithms: ["HS256"],
+    credentialsRequired: false,
+  }), projectinfoHandler.getProject)
 /**
  * 
  * @api {post} /project/delete 项目删除
@@ -124,9 +133,17 @@ router.get('/getproject', projectinfoHandler.getProject)
  *  "status": true,
  *  "message": "success"
  * }
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *   "status": false,
+ *   "message": "您没有权限删除!"
+ * }
  * 
  */
-router.post('/delete', projectinfoHandler.delete)
+router.post('/delete', jwt({ 
+    secret: config.jwtSecretKey, 
+    algorithms: ["HS256"] 
+  }), projectinfoHandler.delete)
 /**
  * 
  * @api {post} /project/add 项目添加
@@ -149,7 +166,10 @@ router.post('/delete', projectinfoHandler.delete)
  * }
  * 
  */
-router.post('/add', projectinfoHandler.add)
+router.post('/add', jwt({ 
+    secret: config.jwtSecretKey, 
+    algorithms: ["HS256"],
+  }), projectinfoHandler.add)
 /**
  * 
  * @api {post} /project/submit 项目进度提交
@@ -158,7 +178,7 @@ router.post('/add', projectinfoHandler.add)
  * @apiDescription  提交项目进度信息
  * @apiVersion  1.0.0
  * 
- * @apiHeader {String} [Authorization] token
+ * @apiHeader {String} Authorization token
  * 
  * @apiBody {String}    id  项目id
  * @apiBody {String}    cycle     项目周期
@@ -177,30 +197,24 @@ router.post('/add', projectinfoHandler.add)
  *   "status": false,
  *   "message": "您已经添加过该周期记录!"
  * }
-*  @apiErrorExample {json} Error-Response:
+ * @apiErrorExample {json} Error-Response:
  * {
  *   "status": false,
  *   "message": "您没有权限添加!"
  * }
  */
-router.post('/submit', projectinfoHandler.submit)
+router.post('/submit', jwt({ 
+    secret: config.jwtSecretKey, 
+    algorithms: ["HS256"],
+  }), projectinfoHandler.submit)
 /**
  * 
- * @api {post} /project/update 项目更新
+ * @api {post} /project/update 项目更新(暂不支持)
  * @apiName  项目更新
  * @apiGroup Project
  * @apiDescription  更新项目信息
  * @apiVersion  1.0.0
  * 
- * @apiBody {String}    id       项目id
- * @apiBody {String}    title  标题
- * @apiBody {String}    date     截止日期
- * @apiBody {String}    host   主持人
- * @apiBody {String}    persons   参与人员
- * @apiBody {String}    details   详情
- * @apiBody {String}    [level]   等级
- * @apiBody {String}    [group]   权限用户组默认all
- * @apiBody {String}    [state]   状态
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
@@ -210,6 +224,9 @@ router.post('/submit', projectinfoHandler.submit)
  * }
  * 
  */
-router.post('/update', projectinfoHandler.update)
+router.post('/update', jwt({ 
+    secret: config.jwtSecretKey, 
+    algorithms: ["HS256"],
+  }), projectinfoHandler.update)
 
 module.exports = router

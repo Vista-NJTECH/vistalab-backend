@@ -26,7 +26,7 @@ exports.getProject = async (req, res) => {
     }
 
     params = [id, groups]
-    sql = `select * from project_ins where project_ins.id = ? AND ((select concat(project_ins.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1)`
+    sql = `select * from project_ins where project_ins.id = ? AND ((select concat(project_ins.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) AND state != '0'`
 
     db.query(sql, params, function(err, results) {
         if (err) return res.cc(err)
@@ -66,7 +66,7 @@ exports.getall = async (req, res) => {
     }
 
     params = [groups]
-    sql = `select * from project_info where ((select concat(project_info.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1)`
+    sql = `select * from project_info where (((select concat(project_info.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) and state != '0')`
 
     db.query(sql, params, async function(err, results) {
         data = results
@@ -137,7 +137,7 @@ exports.add = async (req, res) => {
 
 exports.submit = async (req, res) => {
     await new Promise((resolve, reject) => { 
-      const checkSql = 'SELECT * FROM project_info WHERE id = ?';
+      const checkSql = `SELECT * FROM project_info WHERE id = ? and state != '0'`;
       const checkParams = [req.body.id];
       db.query(checkSql, checkParams, (err, result) => {
         if (err) {
@@ -185,9 +185,15 @@ exports.submit = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-
+  return res.cc("暂不支持!")
 }
 
 exports.delete = async (req, res) => {
-
+  if(!await checkPermission(req.auth.id, "admin")) return res.cc("您没有权限删除!")
+  const sql = 'UPDATE project_info SET ? WHERE id = ?';
+  db.query(sql, [{state : 0},req.body.id], (err, results) => {
+    if (err) return res.cc(err);
+    if(results.affectedRows === 0) return res.cc("删除失败!")
+    res.cc('项目删除成功!',true);
+  });
 }
