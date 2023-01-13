@@ -39,7 +39,7 @@ router.get('/getimg', commonapiHandler.getimg)
  * @apiDescription  获取反馈信息
  * @apiVersion  1.0.0
  * 
- * @apiBody {String} text
+ * @apiBody {String} feedback
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:

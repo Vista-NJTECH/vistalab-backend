@@ -30,26 +30,6 @@ exports.getProject = async (req, res) => {
 
     db.query(sql, params, function(err, results) {
         if (err) return res.cc(err)
-        /*
-            data = [
-                    {
-                        "cycle1": [
-                            {
-                            },
-                            {
-                            }
-                        ]
-                    },
-                    {
-                        "cycle2": [
-                            {
-                            },
-                            {
-                            }
-                        ]
-                    }
-                ]
-        */
         let data = []
         let cycles = []
         for(let i in results) {
@@ -156,25 +136,42 @@ exports.add = async (req, res) => {
 }
 
 exports.submit = async (req, res) => {
-    const checkSql = 'SELECT * FROM project_info WHERE id = ?';
-    const checkParams = [req.body.id];
-    db.query(checkSql, checkParams, (err, results) => {
-      if (err) return res.cc(err);
-      if (results.length === 0) {
-        return res.send({
-          status: false,
-          message: 'Invalid project_id'
-        });
+    await new Promise((resolve, reject) => { 
+      const checkSql = 'SELECT * FROM project_info WHERE id = ?';
+      const checkParams = [req.body.id];
+      db.query(checkSql, checkParams, (err, result) => {
+        if (err) {
+          reject(err);
+          return res.cc(err);
+        } else {
+          if (result.length === 0) return res.cc('Invalid project_id!');
+          if(result[0].members_id.indexOf(req.auth.id) < 0) return res.cc('您没有权限添加!');
+          resolve(result);
         }
-    })
-
+        
+      })
+    });
+    await new Promise((resolve, reject) => {
+      const checkcycle = 'SELECT * FROM process_info WHERE project_id = ? and member_id = ? and cycle = ?';
+      const checkParams = [req.body.id, req.auth.id, req.body.cycle];
+      db.query(checkcycle, checkParams, (err, result_cycle) => {
+        if (err) {
+          reject(err);
+          return res.cc(err);
+        } else {
+          if (result_cycle.length != 0) return res.cc('您已经添加过该周期记录!');
+          resolve(result_cycle);
+        }
+        
+      })
+    });
     const processInfo = {
         project_id: req.body.id,
         cycle: req.body.cycle,
         member_id: req.auth.id,
         remark: req.body.remark,
-        current_work: req.body.current_work,
-        future_plan: req.body.future_plan,
+        current_work: req.body.work,
+        future_plan: req.body.plan,
       };
     
       const sql = 'INSERT INTO process_info SET ?';
@@ -182,7 +179,7 @@ exports.submit = async (req, res) => {
         if (err) return res.cc(err);
         res.send({
           status: true,
-          message: 'Process created successfully'
+          message: '项目进度提交成功!'
         });
       });
 }

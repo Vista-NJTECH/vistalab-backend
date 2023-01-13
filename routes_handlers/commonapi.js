@@ -14,11 +14,11 @@ exports.getimg = (req, res) => {
   }
 
   exports.feedback = (req, res) => {
-    const {text} = req.body
-    if(text == "") return res.cc("不能为空!")
+    const {feedback} = req.body
+    if(feedback == "") return res.cc("不能为空!")
     const sql = 'insert into feedback set ?'
         db.query(sql, { 
-          text: text,
+          text: feedback,
         }, function (err, noresults) {
             if (err){
               return res.cc(err)
