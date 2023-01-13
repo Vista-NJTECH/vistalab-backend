@@ -7,7 +7,10 @@ module.exports.checkPermission = async function(uid, inGroup){
         db.query(`SELECT p_group FROM user_info WHERE id =?`, [uid], function (error, results, fields) {
             if (error) reject(error)
             var array = results[0].p_group
-            resolve(array.includes(inGroup));
+            var p_array = "[" + inGroup + "]"
+            console.log(typeof p_array)
+            //var result = (array.length + p_array.length) !== Array.from(new Set([...array,...p_array])).length;
+            resolve(p_array);
         });
     });
 }

@@ -9,6 +9,7 @@ const {deleteImg, saveImg} = require("../utils/image_utils")
 const {checkPermission} = require("../utils/user_utils")
 
 exports.getProject = async (req, res) => {
+  req.connection.setTimeout(100000);
     const {id} = req.query
     groups = "common"
     if(req.auth){
