@@ -19,8 +19,7 @@ exports.delete = async (req, res) => {
       resolve(results);
     }
   }));
-  if((!await checkPermission(req.auth.id, results[0].s_group)) && 
-  (!await checkPermission(req.auth.id, "admin"))){
+  if(!await checkPermission(req.auth.id, results[0].s_group+ ",admin")){
     return res.cc("您没有权限删除!")
   }
 
@@ -213,7 +212,7 @@ exports.add = async (req, res) => {
   const myQuery = `select username from user_info where id= ?`
   let results = await new Promise((resolve, reject) => db.query(myQuery, req.auth.id, async (err, results) => {
     if (err) {
-      deleteImg(req.file.path)
+      if(req.file) deleteImg(req.file.path)
       reject(err)
       return res.cc(err)
     } else {
@@ -221,13 +220,12 @@ exports.add = async (req, res) => {
     }
   }));
   
-  if((!await checkPermission(req.auth.id, "studya")) && 
-  (!await checkPermission(req.auth.id, "admin"))){
+  if((!await checkPermission(req.auth.id, "studya,admin"))){
     if(req.file) deleteImg(req.file.path)
     return res.cc("您没有权限上传!")
   }
   const uploader_id = req.auth.id
-  const uploader_group = results[0].username
+  const uploader_name = results[0].username
   if(!req.file){
     img_path = "public/src/default.png";
     const sql = `insert into study_info set ?`
@@ -238,8 +236,8 @@ exports.add = async (req, res) => {
         title: req.body.title,
         img_id: 1,
         uploader_id: uploader_id,
-        s_group : uploader_group,
-        view_group : config.studyinfo.basic_view_permission + "," + uploader_group,
+        s_group : uploader_name,
+        view_group : config.studyinfo.basic_view_permission + "," + uploader_name,
         tags: req.body.tags,
       }, function (err, results) {
           if (err){
@@ -278,7 +276,7 @@ exports.add = async (req, res) => {
           title: req.body.title, 
           img_id: results.insertId,
           uploader_id: uploader_id,
-          s_group : uploader_group,
+          s_group : uploader_name,
           view_group : config.studyinfo.basic_view_permission,
           tags: req.body.tags,
         }, function (err, results) {
@@ -306,10 +304,8 @@ exports.update = async (req, res) => {
       resolve(results);
     }
   }));
-  
-  if((!await checkPermission(req.auth.id, results[0].s_group)) && 
-  (!await checkPermission(req.auth.id, "admin"))) return res.cc("您没有权限更新!")
- 
+  if(!await checkPermission(req.auth.id, results[0].s_group + ",admin")) return res.cc("您没有权限更新!")
+  console.log("await checkPermission(req.auth.id, admin) " + await checkPermission(req.auth.id, "admin"))
   // 不更新图片的情况
   if(!req.file){
     const sql = `UPDATE study_info SET ? WHERE id = ?`
