@@ -41,7 +41,11 @@ exports.updateavatar = async (req, res) => {
               return res.cc("更新头像失败!")
             }
             //deleteImg(req.file.path)
-            return res.cc('更新成功!', true)
+            res.send({
+              status: true,
+              message: '头像更新成功！',
+              url: config.url_prefix + req.file.path,
+            })
         })
     })
 

@@ -58,7 +58,8 @@ router.get('/userinfo', userinfoHandler.getUserInfo)
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "message": "更新成功!"
+ *  "message": "头像更新成功！",
+ *  "url": "avatar/path.jpg"
  * }
  * 
  */

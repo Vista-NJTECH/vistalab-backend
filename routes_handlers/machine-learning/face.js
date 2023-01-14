@@ -26,7 +26,7 @@ exports.facelogin = async (req, res) => {
             if(err) return res.cc(err)
         })
         //console.log(resp.status)
-    const sql = `select id, password, username, name, email, avatar, level, created_time from user_info where name=?`
+    const sql = `select id, password, username, name, email, avatar, level, created_time, p_group from user_info where name=?`
     db.query(sql, resp.data, function (err, results) {
         // 执行 SQL 语句失败
         if (err) return res.cc(err)
