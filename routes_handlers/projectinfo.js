@@ -2,11 +2,18 @@ const db = require('../db/index')
 const fs = require('fs')
 const config = require('../config')
 
-const {studyinfo_schema} = require("../schema/studyinfo")
-
-const {deleteImg, saveImg} = require("../utils/image_utils")
+const {GetTimeGap} = require("../utils/project_utils")
 
 const {checkPermission} = require("../utils/user_utils")
+
+function largest(arr, n, i)
+            {
+                if (i == n - 1) {
+                    return arr[i];
+                }
+                let recMax = largest(arr, n, i + 1);
+                return Math.max(recMax, arr[i]);
+            }
 
 exports.getProject = async (req, res) => {
   req.connection.setTimeout(100000);
@@ -28,21 +35,63 @@ exports.getProject = async (req, res) => {
     params = [id, groups]
     sql = `select * from project_ins where project_ins.id = ? AND ((select concat(project_ins.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) AND state != '0'`
 
-    db.query(sql, params, function(err, results) {
+    db.query(sql, params, async function(err, results) {
         if (err) return res.cc(err)
         let data = []
         let cycles = []
-        for(let i in results) {
+        if(results.length === 0){
+          
+          await new Promise((resolve, reject) => { 
+            const checkSql = `SELECT stl, cycleLength FROM project_info WHERE id = ?`;
+            const checkParams = [id];
+            db.query(checkSql, checkParams, async (err, result) => {
+              if (err)return res.cc(err);
+              else {
+                  var tempjson = {}
+                  tempjson["cycle"] = 1
+                  tempjson["cycle_time"] = await GetTimeGap(
+                    result[0].stl, 
+                    result[0].cycleLength, 
+                    0)
+                  tempjson["data"] = []
+                  data.push(tempjson)
+                  resolve(data)
+              }
+            })
+          })
+        }
+        else{
+          for(let i in results) {
           if(cycles.indexOf(results[i].cycle) < 0){
             var tempjson = {}
             cycles.push(results[i].cycle)
-            tempjson[results[i].cycle] = []
-            tempjson[results[i].cycle].push(results[i])
+            tempjson["cycle"] = results[i].cycle
+            tempjson["cycle_time"] = results[i].cycle_time
+            tempjson["data"] = []
+            delete results[i].cycle_time
+            delete results[i].created_time
+            tempjson["data"].push(results[i])
             data.push(tempjson)
           }else{
-            data[cycles.indexOf(results[i].cycle)][results[i].cycle].push(results[i])
+            delete results[i].cycle_time
+            delete results[i].created_time
+            data[cycles.indexOf(results[i].cycle)]["data"].push(results[i])
           }
-        };
+          if(i == results.length - 1 && largest(cycles, cycles.length, 0) < data[largest(cycles, cycles.length, 0) - 1]["data"][0].project_all_cycles){
+            
+
+            const nextcycle = largest(cycles, cycles.length, 0) + 1
+            var tempjson = {}
+            tempjson["cycle"] = nextcycle
+            tempjson["cycle_time"] = await GetTimeGap(
+              data[nextcycle - 2]["data"][0].stl, 
+              data[nextcycle - 2]["data"][0].cycleLength, 
+              nextcycle - 1)
+            tempjson["data"] = []
+            data.push(tempjson)
+          }
+          };
+        }
         res.send({
         status: true,
         data: data,
@@ -117,15 +166,12 @@ exports.add = async (req, res) => {
     }
   
     ddl = new Date(req.body.date)
-    stl = new Date();
+    stl = new Date("2022-12-17");
     stl.setTime(stl.getTime() + 8 * 60 * 60 * 1000);
-    console.log(ddl)
-    console.log(stl)
     const timeDiff = ddl.getTime() - stl;
     const daysDiff = timeDiff / (1000 * 3600 * 24);
     const cycleLength = req.body.cycleLength || 7;
     const numberOfCycles = Math.ceil(daysDiff / cycleLength);
-
     const projectInfo = {
         title: req.body.title,
         details: req.body.details,
@@ -147,6 +193,7 @@ exports.add = async (req, res) => {
 }
 
 exports.submit = async (req, res) => {
+    var cycle_time
     await new Promise((resolve, reject) => { 
       const checkSql = `SELECT * FROM project_info WHERE id = ? and state != '0'`;
       const checkParams = [req.body.id];
@@ -156,7 +203,9 @@ exports.submit = async (req, res) => {
           return res.cc(err);
         } else {
           if (result.length === 0) return res.cc('Invalid project_id!');
-          if(result[0].members_id.indexOf(req.auth.id) < 0) return res.cc('您没有权限添加!');
+          if(!result[0].members_id.includes(req.auth.id)) return res.cc('您没有权限添加!');
+          if(result[0].cycles < req.body.cycle) return res.cc('超过截止日期!');
+          cycle_time = GetTimeGap(result[0].stl, result[0].cycleLength, req.body.cycle - 1)
           resolve(result);
         }
         
@@ -182,6 +231,7 @@ exports.submit = async (req, res) => {
         member_id: req.auth.id,
         remark: req.body.remark,
         current_work: req.body.work,
+        cycle_time: cycle_time, 
         future_plan: req.body.plan,
       };
     

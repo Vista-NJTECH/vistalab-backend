@@ -58,56 +58,68 @@ router.get('/getall', jwt({
  * {
  *  "status": true,
  *  "data": [
- *      {
- *          "1": [
- *              {
- *                  "id": 1,
- *                  "title": "网站建设工作进程doiry,cael可见",
- *                  "details": "test",
- *                  "members_id": "1,2",
- *                  "view_group": "doiry,cael",
- *                  "created_time": "2023-01-10T04:03:00.000Z",
- *                  "current_work": "完成网站后端设计",
- *                  "future_plan": "完成网站后端设计",
- *                  "remark": "testtesttesttesttesttestt",
- *                  "cycle": 1,
- *                  "upload_time": "2023-01-10T04:10:36.000Z",
- *                  "name": "顾俊玮"
- *              },
- *          ]
+ *      "cycle": 1,
+ *      "data": [
+ *           {
+ *               "state": 1,
+ *               "id": 1,
+ *               "stl": "2022-12-26",
+ *               "project_all_cycles": 8,
+ *               "title": "网站建设工作进程doiry,cael可见",
+ *               "details": "test",
+ *               "members_id": "1,2",
+ *               "view_group": "doiry,cael",
+ *               "created_time": "2023-01-09T20:03:00.000Z",
+ *               "current_work": "完成网站后端设计",
+ *               "future_plan": "完成网站后端设计",
+ *               "remark": "testtesttesttesttesttestt",
+ *               "cycle": 1,
+ *               "upload_time": "2023-01-09T20:10:36.000Z",
+ *               "cycle_time": "2022-12-26 - 2023-1-2",
+ *               "name": "顾俊玮"
+ *           },
+ *           {
+ *               "state": 1,
+ *               "id": 1,
+ *               "stl": "2022-12-26",
+ *               "project_all_cycles": 8,
+ *               "title": "网站建设工作进程doiry,cael可见",
+ *               "details": "test",
+ *               "members_id": "1,2",
+ *               "view_group": "doiry,cael",
+ *               "created_time": "2023-01-09T20:03:00.000Z",
+ *               "current_work": "完成网站主要界面设计",
+ *               "future_plan": "完成网站主要界面设计",
+ *               "remark": "2testtesttesttesttesttestt",
+ *               "cycle": 1,
+ *               "upload_time": "2023-01-09T20:10:36.000Z",
+ *               "cycle_time": "2022-12-26 - 2023-1-2",
+ *               "name": "蔡建文"
+ *           }
+ *       ]
  *      },
  *      {
- *          "2": [
+ *          "cycle": 2,
+ *          "data": [
  *              {
+ *                  "state": 1,
  *                  "id": 1,
+ *                  "stl": "2022-12-26",
+ *                  "project_all_cycles": 8,
  *                  "title": "网站建设工作进程doiry,cael可见",
  *                  "details": "test",
  *                  "members_id": "1,2",
  *                  "view_group": "doiry,cael",
- *                  "created_time": "2023-01-10T04:03:00.000Z",
+ *                  "created_time": "2023-01-09T20:03:00.000Z",
  *                  "current_work": "本周工作",
- *                  "future_plan": "2下周工作ww",
- *                  "remark": "2testtesttesttesttesttestt",
- *                  "cycle": 2,
- *                  "upload_time": "2023-01-10T04:10:36.000Z",
- *                  "name": "蔡建文"
- *              },
- *              {
- *                  "id": 1,
- *                  "title": "网站建设工作进程doiry,cael可见",
- *                  "details": "test",
- *                  "members_id": "1,2",
- *                  "view_group": "doiry,cael",
- *                  "created_time": "2023-01-10T04:03:00.000Z",
- *                  "current_work": "本周工作",
- *                  "future_plan": "2下周工作ww",
+ *                  "future_plan": "下周工作",
  *                  "remark": "testtesttesttesttesttestt",
  *                  "cycle": 2,
- *                  "upload_time": "2023-01-10T04:10:36.000Z",
+ *                  "upload_time": "2023-01-09T20:10:36.000Z",
+ *                  "cycle_time": "2023-1-2 - 2023-1-16",
  *                  "name": "顾俊玮"
  *              }
  *          ]
- *      }
  *  ]
  * }
  * 
@@ -204,6 +216,12 @@ router.post('/add', jwt({
  * {
  *   "status": false,
  *   "message": "您没有权限添加!"
+ * }
+ * 
+ * @apiErrorExample {json} Error-Response:
+ * {
+ *   "status": false,
+ *   "message": "超过截止日期!"
  * }
  */
 router.post('/submit', jwt({ 
