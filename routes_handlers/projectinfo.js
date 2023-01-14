@@ -84,12 +84,12 @@ exports.getall = async (req, res) => {
               resolve(results);
             }
           }));
-          var mambers = ''
+          var members = ''
           for(let j in results2){
-            mambers += results2[j].name + " "
+            members += results2[j].name + " "
           }
           delete data[i].member_id
-          data[i].mambers = mambers
+          data[i].members = members
         }
         
         res.send({

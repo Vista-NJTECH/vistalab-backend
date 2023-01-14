@@ -26,6 +26,6 @@ module.exports.userinfo = {
 }
 
 module.exports.deploy = {
-  port: 8181,
-  host: 'db'
+  port: 8180,
+  host: 'localhost'
 }

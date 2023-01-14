@@ -28,7 +28,7 @@ const projectinfoHandler = require('../../routes_handlers/projectinfo')
  *          "ddl": "2022-02-13",
  *          "view_group": "doiry,cael",
  *          "created_time": "2023-01-10T04:03:00.000Z",
- *          "mambers": "顾俊玮 蔡建文 "
+ *          "members": "顾俊玮 蔡建文 "
  *      }
  *  ]
  * }
@@ -41,7 +41,7 @@ router.get('/getall', jwt({
   }), projectinfoHandler.getall)
 /**
  * 
- * @api {get} /project/getcategory 项目详细信息获取
+ * @api {get} /project/getproject 项目详细信息获取
  * @apiName  详细项目信息获取
  * @apiGroup Project
  * @apiDescription  获取详细项目信息

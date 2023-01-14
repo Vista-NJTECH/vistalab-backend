@@ -1,7 +1,7 @@
 const db = require('../db/index')
 const fs = require('fs')
 const config = require('../config')
-
+const {deleteImg} = require("../utils/image_utils")
 
 exports.getUserInfo = (req, res) => {
   const sql = `select id, username, avatar, name, email, level, created_time, p_group from user_info where id=?`
@@ -20,6 +20,18 @@ exports.getUserInfo = (req, res) => {
 }
 
 exports.updateavatar = async (req, res) => {
+  let {size,mimetype,path}=req.file;
+  let types=['jpeg','jpg','png','gif'];
+  let tmpType=mimetype.split('/')[1];
+  //-------------------------------
+  if(size > config.studyinfo.maxSize){
+    if(req.file) deleteImg(req.file.path)
+    return res.cc('上传的内容不能超过' + config.studyinfo.maxSize)
+  }else if(types.indexOf(tmpType)==-1){
+    if(req.file) deleteImg(req.file.path)
+      return res.cc('上传的类型错误')
+  }
+
   const sql1 = `select avatar from user_info where id=?`
   db.query(sql1, req.auth.id, async (err, results) => {
       if (err) {
@@ -30,7 +42,7 @@ exports.updateavatar = async (req, res) => {
         await saveImg(req)
         const sql = `UPDATE user_info SET ? WHERE id = ?`
         db.query(sql, [{
-          avatar: req.file.path,
+          avatar: req.file.path
         }, req.auth.id], function (err, results) {
             if (err){
               deleteImg(req.file.path)
@@ -52,42 +64,21 @@ exports.updateavatar = async (req, res) => {
   
 }
 
-function deleteImg(path){
-  fs.unlink(path,function(error){
-    if(error) res.cc(error)
-  })
-}
 async function saveImg(req){
-  let {size,mimetype,path}=req.file;
-  let types=['jpeg','jpg','png','gif'];
-  let tmpType=mimetype.split('/')[1];
-  //-------------------------------
-  if(size > config.studyinfo.maxSize){
-    deleteImg(req.file.path)
-    return res.cc('上传的内容不能超过' + config.studyinfo.maxSize)
-  }else if(types.indexOf(tmpType)==-1){
-    fs.unlink(req.file.path,function(error){
-      if(error){
-        return res.cc(error)
-      }
-    })
-      return res.cc('上传的类型错误')
-  }
+  
   
   const sharp = require('sharp')
   sharp.cache(false);
 
   async function resizeImage(path) {
     let buffer = await sharp(path)
-      .resize(120, 120, {
-        fit: sharp.fit.inside,
+      .resize(240, 240, {
         withoutEnlargement: true,
       })
       .toBuffer();
     return sharp(buffer).toFile(path);
   }
   await resizeImage(req.file.path);
-
   /*
   const image = await sharp(req.file.path, {
     raw:{
