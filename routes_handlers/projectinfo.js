@@ -116,12 +116,23 @@ exports.add = async (req, res) => {
       groups = groups + "," +results[0].username;
     }
   
-    // Insert new project into database
+    ddl = new Date(req.body.date)
+    stl = new Date();
+    stl.setTime(stl.getTime() + 8 * 60 * 60 * 1000);
+    console.log(ddl)
+    console.log(stl)
+    const timeDiff = ddl.getTime() - stl;
+    const daysDiff = timeDiff / (1000 * 3600 * 24);
+    const cycleLength = req.body.cycleLength || 7;
+    const numberOfCycles = Math.ceil(daysDiff / cycleLength);
+
     const projectInfo = {
         title: req.body.title,
         details: req.body.details,
         members_id: req.auth.id,
-        ddl: req.body.date,
+        stl:stl,
+        ddl: ddl,
+        cycles:numberOfCycles,
         view_group: groups
     };
   

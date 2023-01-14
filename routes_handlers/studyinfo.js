@@ -74,7 +74,7 @@ exports.getall = async (req, res) => {
 
   var subclass = req.query.subclass || ""
   params = [req.query.class, subclass, variable, pagenum, pagesize]
-  sql = `select * from study_ins where classification = ? and coursename = ? and ((select concat(study_ins.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) order by iindex asc LIMIT ? , ?`
+  sql = `select * from study_ins where classification = ? and coursename = ? and ((select concat(study_ins.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) order by id asc LIMIT ? , ?`
   paramscount = [req.query.class, subclass]
   sqlcount = `select count(*) from study_ins where classification = ? and coursename = ?`
 
@@ -143,7 +143,7 @@ exports.getcategory = async (req, res) => {
       groups = results[0].p_group
   }
   params = [groups]
-  sql = `select distinct coursename, classification	from study_info WHERE ((select concat(study_info.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) order by coursename asc`
+  sql = `select distinct coursename, classification	from study_info WHERE ((select concat(study_info.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) order by classification, coursename asc`
   db.query(sql, params, function(err, results) {
     if (err) return res.cc(err)
     let data = []
@@ -169,8 +169,10 @@ exports.getcategory = async (req, res) => {
 }
 
 exports.getRecommend = (req, res) => {
-  var sql = `select * from study_ins where status = 2 LIMIT 9`
-  db.query(sql, [], function(err, results) {
+  const pagesize = config.studyinfo.pagesizenum
+  const pagenum =( parseInt(req.query.page) - 1 )* pagesize || 0
+  var sql = `select * from study_ins where status = 2 LIMIT ?, ?`
+  db.query(sql, [pagenum, pagesize], function(err, results) {
     if (err) return res.cc(err)
     res.send({
       status: true,

@@ -76,6 +76,8 @@ router.get('/getall', jwt({
  * 
  * @apiHeader {String} Authorization token
  * 
+ * @apiParam {String} [page] 页数
+ * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {

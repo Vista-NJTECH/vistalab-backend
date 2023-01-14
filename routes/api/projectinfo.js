@@ -25,10 +25,12 @@ const projectinfoHandler = require('../../routes_handlers/projectinfo')
  *          "title": "网站建设工作进程doiry,cael可见",
  *          "details": "test",
  *          "members_id": "1,2",
- *          "ddl": "2022-02-13",
+ *          "stl": "2023-01-14 19:48:39.621",
+ *          "ddl": "2023-04-04 00:00:00.000",
  *          "view_group": "doiry,cael",
  *          "created_time": "2023-01-10T04:03:00.000Z",
- *          "members": "顾俊玮 蔡建文 "
+ *          "members": "顾俊玮 蔡建文",
+ *          "cycle": 12,
  *      }
  *  ]
  * }
@@ -157,6 +159,7 @@ router.post('/delete', jwt({
  * @apiBody {String}    title  标题
  * @apiBody {String}    date     截止日期
  * @apiBody {String}    details   简介
+ * @apiBody {String}    cycleLength   周期长度
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
