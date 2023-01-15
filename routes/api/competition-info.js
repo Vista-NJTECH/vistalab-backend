@@ -32,4 +32,5 @@ const competitioninfoHandler = require('../../routes_handlers/competition-info')
  * 
  */
 router.get('/getall', competitioninfoHandler.getCompetition)
+
 module.exports = router

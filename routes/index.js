@@ -11,6 +11,8 @@ router.use('/activity', require('./api/activityinfo'))
 
 router.use('/study', require('./api/studyinfo'))
 
+router.use('/feedback', require('./api/feedback'))
+
 router.use('/my', jwt({ 
         secret: config.jwtSecretKey, 
         algorithms: ["HS256"] 

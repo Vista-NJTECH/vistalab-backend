@@ -13,19 +13,3 @@ exports.getimg = (req, res) => {
       })
   }
 
-  exports.feedback = (req, res) => {
-    const {feedback} = req.body
-    if(feedback == "") return res.cc("不能为空!")
-    const sql = 'insert into feedback set ?'
-        db.query(sql, { 
-          text: feedback,
-        }, function (err, noresults) {
-            if (err){
-              return res.cc(err)
-            } 
-            res.send({
-                status: true,
-                message: '提交成功',
-                })
-        })
-  }
