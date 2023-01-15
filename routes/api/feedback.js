@@ -10,7 +10,7 @@ const feedbackHandler = require('../../routes_handlers/feedback')
  * @apiDescription  获取反馈信息
  * @apiVersion  1.0.0
  * 
- * @apiBody {String} feedback
+ * @apiBody {String} id
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
@@ -39,7 +39,7 @@ router.post('/delete', feedbackHandler.delete)
  * }
  * 
  */
-router.post('/submit', feedbackHandler.feedback)
+router.post('/submit', feedbackHandler.submit)
 /**
  * 
  * @api {get} /feedback/get 反馈信息获取
@@ -53,8 +53,18 @@ router.post('/submit', feedbackHandler.feedback)
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
- *  "status": true,
- *  "message": "success"
+ *  "data": [
+ *      {
+ *          "id": 1,
+ *          "feedback": "test",
+ *          "created_time": "2023-01-13T19:39:05.000Z"
+ *      },
+ *      {
+ *          "id": 4,
+ *          "feedback": "123",
+ *          "created_time": "2023-01-15T02:47:03.000Z"
+ *      }
+ *  ]
  * }
  * 
  */

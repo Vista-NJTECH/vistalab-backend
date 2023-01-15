@@ -55,7 +55,7 @@ exports.delete = async (req, res) => {
 }
 
 exports.getall = async (req, res) => {
-
+  if(!req.auth) delete req.auth
   const pagesize = config.studyinfo.pagesizenum
   const pagenum =( parseInt(req.query.page) - 1 )* pagesize || 0
   variable = "common"

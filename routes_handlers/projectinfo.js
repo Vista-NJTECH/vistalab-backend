@@ -101,6 +101,7 @@ exports.getProject = async (req, res) => {
 }
 
 exports.getall = async (req, res) => {
+  if(!req.auth) delete req.auth
     let groups = "common"
     if(req.auth){
         const myQuery = `select p_group from user_info where id= ?`
