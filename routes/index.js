@@ -27,10 +27,10 @@ router.use('/invoice', jwt({
         algorithms: ["HS256"] 
     }), require('./api/invoice'))
 
-    router.use('/project', jwt({ 
-        secret: config.jwtSecretKey, 
-        algorithms: ["HS256"],
-        credentialsRequired: false,
-    }), require('./api/projectinfo'))
+router.use('/project', jwt({ 
+    secret: config.jwtSecretKey, 
+    algorithms: ["HS256"],
+    credentialsRequired: false,
+}), require('./api/projectinfo'))
 
 module.exports = router

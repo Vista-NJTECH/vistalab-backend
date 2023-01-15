@@ -42,7 +42,7 @@ router.post('/delete', feedbackHandler.delete)
 router.post('/submit', feedbackHandler.submit)
 /**
  * 
- * @api {get} /feedback/get 反馈信息获取
+ * @api {get} /feedback/getall 反馈信息获取
  * @apiName  反馈信息获取
  * @apiGroup Feedback
  * @apiDescription  获取反馈信息
@@ -53,21 +53,31 @@ router.post('/submit', feedbackHandler.submit)
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
- *  "data": [
- *      {
- *          "id": 1,
- *          "feedback": "test",
- *          "created_time": "2023-01-13T19:39:05.000Z"
- *      },
- *      {
- *          "id": 4,
- *          "feedback": "123",
- *          "created_time": "2023-01-15T02:47:03.000Z"
- *      }
- *  ]
+ *   "status": true,
+ *  "data": {
+ *      "2023-1-13": [
+ *          {
+ *              "id": 1,
+ *              "feedback": "test",
+ *              "created_time": "2023-01-13T11:39:05.000Z"
+ *          }
+ *      ],
+ *      "2023-1-14": [
+ *          {
+ *              "id": 4,
+ *              "feedback": "123",
+ *              "created_time": "2023-01-14T18:47:03.000Z"
+ *          },
+ *          {
+ *              "id": 6,
+ *              "feedback": "123",
+ *              "created_time": "2023-01-14T18:52:15.000Z"
+ *          }
+ *      ]
+ *  }
  * }
  * 
  */
-router.get('/get', feedbackHandler.get)
+router.get('/getall', feedbackHandler.getAll)
 
 module.exports = router

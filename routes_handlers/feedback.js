@@ -5,7 +5,7 @@ exports.submit = (req, res) => {
   if(feedback == "") return res.cc("不能为空!")
   const sql = 'insert into feedback set ?'
       db.query(sql, { 
-        text: feedback,
+        feedback: feedback,
       }, function (err, noresults) {
           if (err){
             return res.cc(err)
@@ -17,15 +17,25 @@ exports.submit = (req, res) => {
       })
 }
 
-exports.get = (req, res) => {
+exports.getAll = (req, res) => {
   const sql = 'SELECT * from feedback'
   db.query(sql, function (err, results) {
       if (err){
         return res.cc(err)
       } 
+      let groupedByDate = {};
+      results.forEach(function(feedback) {
+          let date = new Date(feedback.created_time);
+          let dateKey = date.getUTCFullYear()+"-"+ (date.getUTCMonth()+1) +"-"+date.getUTCDate();
+          if (!groupedByDate[dateKey]) {
+              groupedByDate[dateKey] = [];
+          }
+          groupedByDate[dateKey].push(feedback);
+      });
+      let newData=Object.entries(groupedByDate).map(([date, data]) => ({date, data}));
       res.send({
           status: true,
-          data: results,
+          data: newData,
           })
   })
 }
