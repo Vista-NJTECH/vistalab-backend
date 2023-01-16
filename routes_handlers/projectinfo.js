@@ -117,7 +117,7 @@ exports.getall = async (req, res) => {
     }
 
     params = [groups]
-    sql = `select * from project_info where (((select concat(project_info.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) and state != '0')`
+    sql = `select * from project_info where (((select concat(project_info.view_group, ',') regexp concat(replace(?,',',',|'),',')) = 1) and state != '0') order by created_time desc`
 
     db.query(sql, params, async function(err, results) {
         data = results
@@ -173,7 +173,8 @@ exports.add = async (req, res) => {
     const timeDiff = ddl.getTime() - stl;
     const daysDiff = timeDiff / (1000 * 3600 * 24);
     const cycleLength = req.body.cycleLength || 7;
-    const numberOfCycles = Math.ceil(daysDiff / cycleLength) - 1;
+    const numberOfCycles = Math.ceil(daysDiff / cycleLength);
+    if(numberOfCycles < 1) return res.cc("日期错误!")
     const projectInfo = {
         title: req.body.title,
         details: req.body.details,

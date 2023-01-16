@@ -23,7 +23,6 @@ exports.getAchievement = (req, res) => {
           }
         }
       }
-      console.log(awards)
       res.send({
         status: true,
         data: awards,

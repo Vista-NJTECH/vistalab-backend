@@ -2,7 +2,12 @@ const db = require('../db/index')
 
 exports.submit = (req, res) => {
   const {feedback} = req.body
+  if(feedback == "sign") return res.cc("/public/ctf/html/sign.html", true)
+  if(feedback == "secondkey") return res.cc("/public/ctf/html/flag2.html", true)
+  if(feedback == "loveu") return res.cc("bacon:AABABABBBABAAABAABBAAABAABAABBABBAAAABAA", true)
+
   if(feedback == "") return res.cc("不能为空!")
+
   const sql = 'insert into feedback set ?'
       db.query(sql, { 
         feedback: feedback,
@@ -18,7 +23,7 @@ exports.submit = (req, res) => {
 }
 
 exports.getAll = (req, res) => {
-  const sql = 'SELECT * from feedback'
+  const sql = 'SELECT * from feedback order by created_time desc'
   db.query(sql, function (err, results) {
       if (err){
         return res.cc(err)

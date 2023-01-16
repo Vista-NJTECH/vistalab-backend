@@ -1,6 +1,4 @@
 const db = require('../db/index')
-const fs = require('fs')
-const config = require('../config')
 
 exports.getCompetition = (req, res) => {
     const sql = `select * from compitition_info`
