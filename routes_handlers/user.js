@@ -7,7 +7,7 @@ const {addPermission} = require('../utils/user_utils')
 exports.register = (req, res) => {
   const userinfo = req.body
   if(userinfo.Invitation_code != config.invitation_code) return res.cc("Invitation Code Error!")
-  const sql = `select * from user_info where username=?`
+  const sql = `select * from user_info where username = ? `
   db.query(sql, [userinfo.username], function (err, results) {
     // 执行 SQL 语句失败
     if (err) {

@@ -307,7 +307,7 @@ exports.update = async (req, res) => {
     }
   }));
   if(!await checkPermission(req.auth.id, results[0].s_group + ",admin")) return res.cc("您没有权限更新!")
-  console.log("await checkPermission(req.auth.id, admin) " + await checkPermission(req.auth.id, "admin"))
+  //console.log("await checkPermission(req.auth.id, admin) " + await checkPermission(req.auth.id, "admin"))
   // 不更新图片的情况
   if(!req.file){
     const sql = `UPDATE study_info SET ? WHERE id = ?`
@@ -337,7 +337,7 @@ exports.update = async (req, res) => {
       return res.cc(err)
     }
   
-    const sqly = `SELECT * FROM study_ins WHERE id = ?)`
+    const sqly = `SELECT * FROM study_ins WHERE id = ?`
     db.query(sqly, req.body.id, function(err, results) {
       //console.log(results[0])
       if (err) return res.cc(err)
@@ -350,7 +350,7 @@ exports.update = async (req, res) => {
         results[0].img_id = 0
       }
       else {
-        deleteImg(req.file.path)
+        deleteImg(results[0].path)
       }
 
       const sql = `delete from img_info WHERE id=?`

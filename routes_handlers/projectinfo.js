@@ -123,11 +123,12 @@ exports.getall = async (req, res) => {
         data = results
         if (err) return res.cc(err)
         for(let i in data){
-          ids = data[i].members_id
-          params = [ids]
-          
-          sql = `select name from user_info where ((select concat(user_info.id, ',') regexp concat(replace(?,',',',|'),',')) = 1)`
-          let results2 = await new Promise((resolve, reject) => db.query(sql, params, async (err, results) => {
+          ids = data[i].members_id.split(",")
+          var members = ''
+          for(let j in ids) {
+
+            sql = `select name from user_info where id = ?`
+          let results2 = await new Promise((resolve, reject) => db.query(sql, ids[j], async (err, results) => {
             if (err) {
               reject(err)
               return res.cc(err)
@@ -135,13 +136,12 @@ exports.getall = async (req, res) => {
               resolve(results);
             }
           }));
-          var members = ''
-          for(let j in results2){
-            members += results2[j].name + " "
-          }
-          delete data[i].member_id
-          data[i].members = members
+          members += results2[0].name + " "
         }
+        delete data[i].member_id
+        data[i].members = members
+          }
+          
         
         res.send({
           status: true,
