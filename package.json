@@ -25,7 +25,8 @@
     "mysql": "^2.18.1",
     "node-fetch": "^3.3.0",
     "sharp": "^0.31.3",
-    "webrtc-adapter": "^8.2.0"
+    "webrtc-adapter": "^8.2.0",
+    "ws": "^8.12.0"
   },
   "keywords": [],
   "license": "ISC",

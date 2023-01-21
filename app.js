@@ -25,6 +25,8 @@ app.use(function (req, res, next) {
   next()
 })
 
+// Socket
+require('./websocket/index');
 ////////////////////////////////////////////////////////////////////
 
 //解析表单中间件
