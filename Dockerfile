@@ -13,4 +13,5 @@ RUN npm install cnpm -g
 RUN cnpm install
 
 EXPOSE 8181
+EXPOSE 8183
 CMD [ "node", "app.js" ]
