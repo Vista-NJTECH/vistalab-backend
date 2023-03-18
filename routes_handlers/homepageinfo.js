@@ -44,7 +44,7 @@ exports.getCertificate = (req, res) => {
 
 exports.uploadcert = async (req, res) => {
     const imgInfo = await image_utils.saveImg(req, {width: 720, height: 540})
-    const sql = 'insert into img_info set ?'
+    const sql = `insert into img_info set ?`
     db.query(sql, { 
       path: req.file.path, 
       size: imgInfo.info.size,

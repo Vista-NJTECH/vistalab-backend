@@ -3,7 +3,7 @@ const fs = require('fs')
 const config = require('../config')
 
 exports.getimg = (req, res) => {
-    const sql = `select base64 from img_info where id=?`
+    const sql = `select base64 from img_info where id = ?`
     db.query(sql, req.query.id, (err, results) => {
         if (err) {
           return res.cc(err)

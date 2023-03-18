@@ -8,7 +8,7 @@ const axios = require('axios')
 const https = require('https')
 
 exports.facelogin = async (req, res) => {
-    const url = 'http://124.223.196.177:8182/face/facerecog'
+    const url = 'http://127.0.0.1:8182/face/facerecog'
     const form = new FormData();
 
     form.append("image", fs.createReadStream(req.file.path), "test.png");
@@ -22,9 +22,6 @@ exports.facelogin = async (req, res) => {
         if(resp.status != 200){
             res.cc("登录失败!")
         }
-        fs.unlink(req.file.path,function(err){
-            if(err) return res.cc(err)
-        })
         //console.log(resp.status)
     const sql = `select id, password, username, name, email, avatar, level, created_time, p_group from user_info where name=?`
     db.query(sql, resp.data, function (err, results) {

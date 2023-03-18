@@ -83,3 +83,18 @@ exports.login = (req, res) => {
         })
   })
 }
+
+exports.getAllUser = (req, res) => {
+  const userinfo = req.body
+  const sql = `select id, password, username, name, email, avatar, level, p_group, created_time from user_info`
+        db.query(sql, {
+        }, function (err, results) {
+            if (err){
+              return res.cc(err)
+            } 
+            res.send({
+                status: true,
+                data: results
+                })
+        })
+}

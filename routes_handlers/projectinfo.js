@@ -6,8 +6,7 @@ const {GetTimeGap} = require("../utils/project_utils")
 
 const {checkPermission} = require("../utils/user_utils")
 
-function largest(arr, n, i)
-            {
+function largest(arr, n, i) {
                 if (i == n - 1) {
                     return arr[i];
                 }
