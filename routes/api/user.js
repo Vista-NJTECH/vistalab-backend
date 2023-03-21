@@ -60,4 +60,6 @@ router.post('/login', expressJoi(reg_login_schema), userHandler.login)
 
 router.get('/getall', userHandler.getAllUser)
 
+router.get('/edit', userHandler.edit)
+
 module.exports = router

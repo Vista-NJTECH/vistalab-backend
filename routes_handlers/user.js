@@ -85,7 +85,6 @@ exports.login = (req, res) => {
 }
 
 exports.getAllUser = (req, res) => {
-  const userinfo = req.body
   const sql = `select id, password, username, name, email, avatar, level, p_group, created_time from user_info`
         db.query(sql, {
         }, function (err, results) {
@@ -98,3 +97,46 @@ exports.getAllUser = (req, res) => {
                 })
         })
 }
+
+exports.edit = (req, res) => {
+  const userinfo = req.body
+  const sql = `select id, password, username, name, email, avatar, level, p_group, created_time from user_info where username=?`
+  db.query(sql, userinfo.username, function (err, results) {
+    // 执行 SQL 语句失败
+    if (err) return res.cc(err)
+    // 执行 SQL 语句成功，但是查询到数据条数不等于 1
+    if (results.length !== 1) return res.cc('登录失败！')
+    // 拿着用户输入的密码,和数据库中存储的密码进行对比
+    const compareResult = bcrypt.compareSync(userinfo.password, results[0].password)
+    // 如果对比的结果等于 false, 则证明用户输入的密码错误
+    if (!compareResult) {
+      return res.cc('登录失败！')
+    }
+    if(results[0].avatar == null) results[0].avatar = config.userinfo.default_avatar
+    const user = { ...results[0], password: '', avatar: config.url_prefix + results[0].avatar}
+    const usertoken = { ...results[0], password: '', avatar: '', name: "", email: "", level: "",created_time: "" }
+    const tokenStr = jwt.sign(usertoken, config.jwtSecretKey, {
+      expiresIn: config.expiresIn,
+    })
+
+    //res.cookie("token",'vista ' + tokenStr,{maxAge:config.cookieage,httpOnly:true});
+
+    const sql = 'insert into login_log set ?'
+        db.query(sql, { 
+            name: user.name, 
+            u_id: user.id, 
+            way: "pwd",
+        }, function (err, noresults) {
+            if (err){
+              return res.cc(err)
+            } 
+            res.send({
+                status: true,
+                message: '登录成功！',
+                userinfo : user,
+                token: 'Bearer ' + tokenStr,
+                })
+        })
+  })
+
+  }
