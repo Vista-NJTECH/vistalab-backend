@@ -14,6 +14,8 @@ const { reg_login_schema } = require('../../schema/user')
  * 
  * @apiBody {String} username
  * @apiBody {String} password
+ * @apiBody {String} email
+ * @apiBody {String} code
  * @apiBody {String} Invitation_code
  * 
  * @apiSuccess {Number} code 200
@@ -28,21 +30,20 @@ router.post('/register', expressJoi(reg_login_schema), userHandler.register)
 
 /**
  * 
- * @api {post} /api/ecode 用户注册
- * @apiName  用户注册
+ * @api {post} /api/ecode 用户注册验证码
+ * @apiName  用户注册验证码
  * @apiGroup User
- * @apiDescription  用户注册
+ * @apiDescription  用户注册验证码
  * @apiVersion  1.0.0
  * 
  * @apiBody {String} username
- * @apiBody {String} password
- * @apiBody {String} Invitation_code
+ * @apiBody {String} email
  * 
  * @apiSuccess {Number} code 200
  * @apiSuccessExample {type} Response-Example:
  * {
  *  "status": true,
- *  "message": "注册成功！"
+ *  "message": "Sent"
  * }
  * 
  */
