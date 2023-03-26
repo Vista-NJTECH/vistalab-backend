@@ -17,8 +17,14 @@ const password = joi
   .pattern(/^[\S]{6,12}$/)
   .required()
 
-  const Invitation_code = joi
+const Invitation_code = joi
+.string()
+
+const email = joi
   .string()
+
+const code = joi
+.string()
 
 // 注册和登录表单的验证规则对象
 exports.reg_login_schema = {
@@ -27,5 +33,7 @@ exports.reg_login_schema = {
     username,
     password,
     Invitation_code,
+    email,
+    code
   },
 }

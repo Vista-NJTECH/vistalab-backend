@@ -3,10 +3,82 @@ const jwt = require('jsonwebtoken')
 const config = require('../config')
 const db = require('../db/index')
 const {addPermission} = require('../utils/user_utils')
+const {transporter} = require('../utils/email')
 
-exports.register = (req, res) => {
+exports.ecode = (req, res) => {
+    const { username, email } = req.body;
+
+    ///////////////////
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
+    const sql = `DELETE FROM email_verification_codes WHERE created_at < '${thirtyMinutesAgo}'`;
+    db.query(sql, (err, result) => {
+      if (err) throw err;
+    });
+  /////////////////////
+    const code = Math.floor(100000 + Math.random() * 900000);
+
+    const mailOptions = {
+        from: '"Vista Labs INFO 👻" <njtech_vista@163.com>',
+        to: email,
+        subject: 'Email Verification',
+        text: `Hello ${username},\n\nYour Verification Code is ${code}. Please use this code to verify your [email address].\n\nThank you,\nThe Verification Team`
+    };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+        res.cc(error)
+    } else {
+      const sql = 'INSERT INTO email_verification_codes SET ? ON DUPLICATE KEY UPDATE verification_code = ?, created_at = ?';
+      db.query(sql, [{
+        email: email,
+        verification_code: code,
+        created_at: new Date(),
+      }, code, new Date()], function (err, results) {
+        if (err) {
+          return res.cc(err);
+        }
+        return res.cc('Sent', true);
+      });
+    }
+  });
+}
+
+async function checkVerificationCode(email, code) {
+  const sql = 'SELECT * FROM email_verification_codes WHERE email = ? AND verification_code = ?';
+   db.query(sql, [email, code], function (err, results) {
+    if (err) {
+      return false;
+    }
+    if (results.length === 0) {
+      return false;
+    }
+    const createdAt = new Date(results[0].created_at);
+    const now = new Date();
+    const diff = (now - createdAt) / 1000;
+    if (diff > 60 * 30) {
+      return false;
+    }
+    return true;
+  });
+}
+
+exports.register = async (req, res) => {
   const userinfo = req.body
-  if(userinfo.Invitation_code != config.invitation_code) return res.cc("Invitation Code Error!")
+  const sql = 'SELECT * FROM email_verification_codes WHERE email = ? AND verification_code = ?';
+   db.query(sql, [userinfo.email, userinfo.code], function (err, results) {
+    if (err) {
+      return false;
+    }
+    if (results.length === 0) {
+      return res.cc('验证码无效！');
+    }
+    const createdAt = new Date(results[0].created_at);
+    const now = new Date();
+    const diff = (now - createdAt) / 1000;
+    if (diff > 60 * 30) {
+      return res.cc('验证码过期！');
+    }
+    if(userinfo.Invitation_code != config.invitation_code) return res.cc("Invitation Code Error!")
   const sql = `select * from user_info where username = ? `
   db.query(sql, [userinfo.username], function (err, results) {
     // 执行 SQL 语句失败
@@ -34,11 +106,15 @@ exports.register = (req, res) => {
         return res.cc('注册用户失败，请稍后再试！')
       }
       addPermission(results.insertId, config.userinfo.basic_permission)
+      const sql = `DELETE FROM email_verification_codes WHERE email = '${userinfo.email}'`;
+      db.query(sql, (err, result) => {
+        if (err) throw err;
+      });
       return res.cc('注册成功！', true)
     })
 
   })
-
+  });
   }
   
 // 登录的处理函数
