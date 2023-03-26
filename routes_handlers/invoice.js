@@ -5,6 +5,7 @@ const db = require('../db/index')
 const config = require('../config')
 const {checkPermission} = require('../utils/user_utils')
 const {deleteImg} = require('../utils/image_utils')
+const {groupBy} = require('../utils/groupBy')
 
 exports.add = async (req, res) => {
     const url = 'http://invoice.heycore.com/invoice/extrat'
@@ -21,7 +22,7 @@ exports.add = async (req, res) => {
       });
 
     const invoiceIns = response.data
-
+    const project = req.body.project || 'uncategorized';
     if(!invoiceIns.detailList[0]){
         res.cc("后端失效!")
     }
@@ -36,6 +37,7 @@ exports.add = async (req, res) => {
             amount: invoiceIns.totalAmount, 
             remark: req.body.remark, 
             category: req.body.category,
+            project : project,
             path : req.file.path,
             i_group : results[0].username,
         }, function (err, results) {
@@ -61,12 +63,12 @@ exports.getall = async (req, res) => {
     }else{
         sql = `select * from invoice_ins where applicant_id = ?`
     }
-
     db.query(sql, req.auth.id, function (err, results) {
       if (err) return res.cc(err)
+      const re = groupBy(results, "project")
       res.send({
         status: true,
-        data: results,
+        data: re,
         prefix: config.url_prefix,
       })
     })
