@@ -21,7 +21,7 @@ exports.ecode = (req, res) => {
         from: '"Vista Labs INFO 👻" <njtech_vista@163.com>',
         to: email,
         subject: 'Email Verification',
-        text: `Hello ${username},\n\nYour Verification Code is ${code}. Please use this code to verify your [email address].\n\nThank you,\nThe Verification Team`
+        text: `Hello ${username},\n\nYour Verification Code is ${code}. Please use this code to verify your ${email}.\n\nThank you,\nVista Labs Team`
     };
 
   transporter.sendMail(mailOptions, (error, info) => {
