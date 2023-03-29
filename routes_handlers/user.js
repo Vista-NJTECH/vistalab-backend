@@ -117,18 +117,13 @@ exports.register = async (req, res) => {
   });
   }
   
-// 登录的处理函数
 exports.login = (req, res) => {
   const userinfo = req.body
   const sql = `select id, password, username, name, email, avatar, level, p_group, created_time from user_info where username=?`
   db.query(sql, userinfo.username, function (err, results) {
-    // 执行 SQL 语句失败
     if (err) return res.cc(err)
-    // 执行 SQL 语句成功，但是查询到数据条数不等于 1
     if (results.length !== 1) return res.cc('登录失败！')
-    // 拿着用户输入的密码,和数据库中存储的密码进行对比
     const compareResult = bcrypt.compareSync(userinfo.password, results[0].password)
-    // 如果对比的结果等于 false, 则证明用户输入的密码错误
     if (!compareResult) {
       return res.cc('登录失败！')
     }
