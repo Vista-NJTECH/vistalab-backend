@@ -34,7 +34,7 @@ const upload = multer({storage})
  *      "id": 1,
  *      "password": "",
  *      "username": "doiry",
- *      "avatar": "https://backend.vistalab.top/public/uploads/avatar/1673069127915-default_avatar.png",
+ *      "avatar": "https://banckend.com/public/uploads/avatar/1673069127915-default_avatar.png",
  *      "name": "jerrygu",
  *      "email": "jerrygu.gjw@gmail.com",
  *      "level": 0,
@@ -45,5 +45,21 @@ const upload = multer({storage})
  * 
  */
 router.post('/facelogin', upload.single("image"), faceHandler.facelogin)
+/**
+ * 
+ * @api {post} /api/facelogin 用户人脸训练
+ * @apiName 用户人脸训练
+ * @apiGroup MachineLearning
+ * @apiVersion  1.0.0
+ * 
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *  "status": true,
+ *  "message": "训练成功！"
+ *  }
+ */
+router.post('/facetrain', faceHandler.facetrain)
 
 module.exports = router

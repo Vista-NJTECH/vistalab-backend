@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const userHandler = require('../../routes_handlers/user')
 const expressJoi = require('@escook/express-joi')
-const { reg_login_schema } = require('../../schema/user')
+const { reg_login_schema, update_psd_schema } = require('../../schema/user')
 
 /**
  * 
@@ -85,5 +85,7 @@ router.post('/login', expressJoi(reg_login_schema), userHandler.login)
 router.get('/getall', userHandler.getAllUser)
 
 router.get('/edit', userHandler.edit)
+
+router.post('/changepwd', expressJoi(update_psd_schema), userHandler.changePassword)
 
 module.exports = router

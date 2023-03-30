@@ -9,8 +9,7 @@ COPY package.json ./
 COPY . .
 
 RUN npm config set registry http://registry.npm.taobao.org
-RUN npm install cnpm -g
-RUN cnpm install
+RUN npm install
 
 EXPOSE 8181
 EXPOSE 8183

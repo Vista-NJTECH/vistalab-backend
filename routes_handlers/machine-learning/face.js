@@ -8,11 +8,10 @@ const axios = require('axios')
 const https = require('https')
 
 exports.facelogin = async (req, res) => {
-    const url = 'http://127.0.0.1:8182/face/facerecog'
+    const url = config.deploy.faceUrl + "face/facerecog";
     const form = new FormData();
-
     form.append("image", fs.createReadStream(req.file.path), "test.png");
-    var resp
+    var resp;
     try {
         resp = await axios.post(url, form, {
             headers: {
@@ -62,7 +61,27 @@ exports.facelogin = async (req, res) => {
     } catch (error) {
         res.cc(error)
     }
+}
 
-    
-    
+exports.facetrain = async (req, res) => {
+    const url = config.deploy.faceUrl + "face/train";
+    const form = new FormData();
+    var resp;
+    try {
+        resp = await axios.post(url, form, {
+            headers: {
+            ...form.getHeaders(),
+            }
+        });
+        if(resp.status != 200){
+            res.cc("登录失败!")
+        }
+        res.send({
+            status: true,
+            message: '训练成功！'
+            })
+   
+    } catch (error) {
+        res.cc(error)
+    }
 }

@@ -20,6 +20,10 @@ const password = joi
 const Invitation_code = joi
 .string()
 
+const secure_code = joi
+.string()
+.required()
+
 const email = joi
   .string()
 
@@ -35,5 +39,14 @@ exports.reg_login_schema = {
     Invitation_code,
     email,
     code
+  },
+}
+
+exports.update_psd_schema = {
+  // 表示需要对 req.body 中的数据进行验证
+  body: {
+    username,
+    password,
+    secure_code
   },
 }

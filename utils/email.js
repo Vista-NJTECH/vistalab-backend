@@ -1,9 +1,10 @@
 const nodemailer = require('nodemailer');
+const config = require('../config')
 
 module.exports.transporter = nodemailer.createTransport({
-    service: "163",
+    service: config.email.service,
     auth: {
-        user: 'njtech_vista@163.com',
-        pass: 'ZQFAVPWPEVOLTBPM'
+        user: config.email.emailAdd,
+        pass: config.email.pass
     }
 });

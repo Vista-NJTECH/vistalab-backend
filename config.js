@@ -5,7 +5,7 @@ module.exports = {
   expiresIn: '240h',
   cookieage: 15*24*60*60*1000,
   invitation_code: 'vistalab666',
-  url_prefix: 'https://backend.vistalab.top/',
+  url_prefix: 'https://vista.online.njtech.edu.cn/backend/',
 }
 
 module.exports.db = {
@@ -23,9 +23,17 @@ module.exports.studyinfo = {
 module.exports.userinfo = {
   default_avatar: "public/src/default_avatar_resized.png",
   basic_permission: "common",
+  secure_code: "vista"
 }
 
 module.exports.deploy = {
   port: 8180,
+  faceUrl: "http://127.0.0.1:8182/",
   host: 'localhost'
+}
+
+module.exports.email = {
+  emailAdd: 'njtech_vista@163.com',
+  service: '163',
+  pass: 'ZQFAVPWPEVOLTBPM'
 }

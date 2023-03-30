@@ -7,14 +7,13 @@ const {transporter} = require('../utils/email')
 
 exports.ecode = (req, res) => {
     const { username, email } = req.body;
-
     ///////////////////
     const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
     const sql = `DELETE FROM email_verification_codes WHERE created_at < '${thirtyMinutesAgo}'`;
     db.query(sql, (err, result) => {
       if (err) throw err;
     });
-  /////////////////////
+   /////////////////////
     const code = Math.floor(100000 + Math.random() * 900000);
 
     const mailOptions = {
@@ -43,25 +42,6 @@ exports.ecode = (req, res) => {
   });
 }
 
-async function checkVerificationCode(email, code) {
-  const sql = 'SELECT * FROM email_verification_codes WHERE email = ? AND verification_code = ?';
-   db.query(sql, [email, code], function (err, results) {
-    if (err) {
-      return false;
-    }
-    if (results.length === 0) {
-      return false;
-    }
-    const createdAt = new Date(results[0].created_at);
-    const now = new Date();
-    const diff = (now - createdAt) / 1000;
-    if (diff > 60 * 30) {
-      return false;
-    }
-    return true;
-  });
-}
-
 exports.register = async (req, res) => {
   const userinfo = req.body
   const sql = 'SELECT * FROM email_verification_codes WHERE email = ? AND verification_code = ?';
@@ -79,9 +59,9 @@ exports.register = async (req, res) => {
       return res.cc('验证码过期！');
     }
     if(userinfo.Invitation_code != config.invitation_code) return res.cc("Invitation Code Error!")
-  const sql = `select * from user_info where username = ? `
-  db.query(sql, [userinfo.username], function (err, results) {
-    // 执行 SQL 语句失败
+    const sql = `select * from user_info where username = ? `
+    db.query(sql, [userinfo.username], function (err, results) {
+      // 执行 SQL 语句失败
     if (err) {
       return res.cc(err)
     }
@@ -210,4 +190,57 @@ exports.edit = (req, res) => {
         })
   })
 
+  }
+
+  exports.changePassword = (req, res) => {
+  //   const { username, email } = req.body;
+  //   ///////////////////
+  //   const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
+  //   const dsql = `DELETE FROM email_verification_codes WHERE created_at < '${thirtyMinutesAgo}'`;
+  //   db.query(dsql, (err, result) => {
+  //     if (err) throw err;
+  //   });
+  //  /////////////////////
+  //   const code = Math.floor(100000 + Math.random() * 900000);
+
+  //   const mailOptions = {
+  //       from: '"Vista Labs INFO 👻" <njtech_vista@163.com>',
+  //       to: email,
+  //       subject: 'Email Verification',
+  //       text: `Hello ${username},\n\nYour Verification Code is ${code}. Please use this code to verify your ${email}.\n\nThank you,\nVista Labs Team`
+  //   };
+
+  //   transporter.sendMail(mailOptions, (error, info) => {
+  //     if (error) {
+  //         res.cc(error)
+  //     } else {
+  //       const sql = 'INSERT INTO email_verification_codes SET ? ON DUPLICATE KEY UPDATE verification_code = ?, created_at = ?';
+  //       db.query(sql, [{
+  //         email: email,
+  //         verification_code: code,
+  //         created_at: new Date(),
+  //       }, code, new Date()], function (err, results) {
+  //         if (err) {
+  //           return res.cc(err);
+  //         }
+  //         return res.cc('Sent', true);
+  //       });
+  //     }
+  //   });
+
+    const userinfo = req.body
+    userinfo.password = bcrypt.hashSync(userinfo.password, 10)
+    if (userinfo.secure_code != config.userinfo.secure_code) return res.cc("Error secure code!");
+    const sql = 'UPDATE user_info SET password = ? WHERE username = ?';
+    const values = [userinfo.password, userinfo.username];
+
+        db.query(sql, values, function (err, results) {
+            if (err){
+              return res.cc(err)
+            } 
+            res.send({
+                status: true,
+                message: '修改成功！'
+                })
+        })
   }
