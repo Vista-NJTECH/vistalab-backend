@@ -51,7 +51,7 @@ router.post('/ecode', userHandler.ecode)
 
 /**
  * 
- * @api {post} /api/register 用户登录
+ * @api {post} /api/login 用户登录
  * @apiName 用户登录
  * @apiGroup User
  * @apiDescription 返回用户token
@@ -85,7 +85,26 @@ router.post('/login', expressJoi(reg_login_schema), userHandler.login)
 router.get('/getall', userHandler.getAllUser)
 
 router.get('/edit', userHandler.edit)
-
+/**
+ * 
+ * @api {post} /api/changepwd 用户密码修改
+ * @apiName 用户密码修改
+ * @apiGroup User
+ * @apiDescription 返回修改提示
+ * @apiVersion  1.0.0
+ * 
+ * @apiBody {String} username
+ * @apiBody {String} password
+ * @apiBody {String} secure_code
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *     "status": true,
+ *     "message": "修改成功！"
+ * }
+ * 
+ */
 router.post('/changepwd', expressJoi(update_psd_schema), userHandler.changePassword)
 
 module.exports = router

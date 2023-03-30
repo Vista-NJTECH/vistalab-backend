@@ -47,7 +47,7 @@ const upload = multer({storage})
 router.post('/facelogin', upload.single("image"), faceHandler.facelogin)
 /**
  * 
- * @api {post} /api/facelogin 用户人脸训练
+ * @api {post} /api/facetrain 用户人脸训练
  * @apiName 用户人脸训练
  * @apiGroup MachineLearning
  * @apiVersion  1.0.0
