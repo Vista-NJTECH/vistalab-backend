@@ -5,6 +5,7 @@ const db = require('../db/index')
 const {addPermission} = require('../utils/user_utils')
 const {transporter} = require('../utils/email')
 
+
 exports.ecode = (req, res) => {
     const { username, email } = req.body;
     ///////////////////
@@ -76,6 +77,8 @@ exports.register = async (req, res) => {
     const sql = 'insert into user_info set ?'
     db.query(sql, { 
       username: userinfo.username, 
+      email: userinfo.email,
+      name: "佚名",
       password: userinfo.password,
       p_group: userinfo.username
     }, function (err, results) {
