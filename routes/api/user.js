@@ -106,5 +106,32 @@ router.get('/edit', userHandler.edit)
  * 
  */
 router.post('/changepwd', expressJoi(update_psd_schema), userHandler.changePassword)
-
+/**
+ * 
+ * @api {post} /api/userinfo 用户信息
+ * @apiName 用户信息
+ * @apiGroup User
+ * @apiDescription 返回用户信息
+ * @apiVersion  1.0.0
+ * 
+ * @apiHeader {String} Authorization token
+ * 
+ * @apiSuccess {Number} code 200
+ * @apiSuccessExample {type} Response-Example:
+ * {
+ *   "status": true,
+ *  "message": "获取用户基本信息成功！",
+ *  "userinfo": {
+ *      "id": 1,
+ *      "username": "doiry",
+ *      "avatar": "https://backend.vistalab.top/public/uploads/avatar/1673069127915-default_avatar.png",
+ *      "name": "jerryGu",
+ *      "email": "jerrygu.gjw@gmail.com",
+ *      "level": 0,
+ *      "created_time": "2022-12-26T07:02:16.000Z"
+ *  }
+ * }
+ * 
+ */
+router.get('/userinfo', userHandler.getUserInfo)
 module.exports = router

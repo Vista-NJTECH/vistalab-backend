@@ -247,3 +247,21 @@ exports.edit = (req, res) => {
                 })
         })
   }
+
+
+exports.getUserInfo = (req, res) => {
+  id = req.body.id || "1"
+  const sql = `select id, username, avatar, name, email, level, created_time, p_group from user_info where id=?`
+  db.query(sql, req.body.id, (err, results) => {
+      if (err) {
+        return res.cc(err)
+      }
+      if (results.length !== 1) return res.cc('获取用户信息失败！')
+      const user = { ...results[0], avatar: config.url_prefix + results[0].avatar}
+      res.send({
+        status: true,
+        message: '获取用户基本信息成功！',
+        userinfo: user,
+      })
+    })
+}
