@@ -1,263 +1,142 @@
-const db = require('../db/index')
-const fs = require('fs')
-const config = require('../config')
+const db = require('../db/index');
+const fs = require('fs');
+const config = require('../config');
 
-const {activityinfo_schema} = require("../schema/activityinfo")
-const image_utils = require("../utils/image_utils")
+const { activityinfo_schema } = require('../schema/activityinfo');
+const image_utils = require('../utils/image_utils');
 
+// 获取活动信息
 exports.getActivity = (req, res) => {
-var sql
-if(req.query.count){
-    sql = `select activity_info.id, title, date, detail, path, width, height, base64 from img_info, activity_info where (img_info.id = activity_info.img_id)order by time DESC LIMIT ?`
-}else{
-    sql = `select activity_info.id, title, date, detail, path, width, height, base64 from img_info, activity_info where (img_info.id = activity_info.img_id)order by time DESC`
-}
-const count = parseInt(req.query.count)
-db.query(sql, count, (err, results) => {
-    if (err) {
-        return res.cc(err)
-    }
-    if (results.length == 0) return res.cc('获取用户信息失败！')
-    //console.log(results)
-    var data = []
-    for (let i in results){
-        var activateIns = {}
-        var imgIns = {}
-        activateIns.id = results[i].id
-        activateIns.title = results[i].title
-        activateIns.date = results[i].date
-        activateIns.detail = results[i].detail
-        imgIns.width = results[i].width
-        imgIns.height = results[i].height
-        imgIns.path = results[i].path
-        imgIns.base64 = results[i].base64
-        activateIns.img = imgIns
-        data.push(activateIns)
-    }
-    res.send({
-        status: true,
-        data: data,
-        prefix: config.url_prefix,
-    })
-    })
-}
+  let sql;
+  const { count } = req.query;
 
+  sql = `
+    SELECT activity_info.id, title, date, detail, path, width, height, base64 
+    FROM img_info, activity_info 
+    WHERE img_info.id = activity_info.img_id 
+    ORDER BY date DESC
+    ${count ? 'LIMIT ?' : ''}
+  `;
+
+  db.query(sql, [parseInt(count)], (err, results) => {
+    if (err) return res.cc(err);
+    if (!results.length) return res.cc('获取用户信息失败！');
+
+    const data = results.map((result) => ({
+      id: result.id,
+      title: result.title,
+      date: result.date,
+      detail: result.detail,
+      img: {
+        width: result.width,
+        height: result.height,
+        path: result.path,
+        base64: result.base64,
+      },
+    }));
+
+    res.send({
+      status: true,
+      data,
+      prefix: config.url_prefix,
+    });
+  });
+};
+
+// 添加活动信息
 exports.addActivity = async (req, res) => {
-    var img_path;
-    //------------表单验证-----------
-    try {
-      const validation = await activityinfo_schema.validate(req.body)
-      if(validation.error){
-        if(req.file.path){
-          fs.unlink(req.file.path,function(error){
-            if(error){
-              return res.cc(error)
-            }
-          })
-        }
-        return res.cc(validation.error)
-      }
-    } catch (err) {
-      return res.cc(err)
-    }
-    if(!req.file){
-      img_path = "public/src/default.png";
-      const sql = 'insert into activity_info set ?'
-        db.query(sql, { 
-            title: req.body.title, 
-            date: req.body.date, 
-            detail: req.body.detail, 
-            img_id: 1,
-        }, function (err, results) {
-            if (err){
-              return res.cc(err)
-            } 
-            if (results.affectedRows !== 1) {
-              return res.cc("插入数据库activity_info失败!")
-            }
-            return res.cc('上传成功!', true)
-        })
-  
-    }else{
-      img_path = req.file.path
-      const imgInfo = await image_utils.saveImg(req)
-      const sql = 'insert into img_info set ?'
-      db.query(sql, { 
-        path: img_path, 
+  try {
+    // 表单验证
+    const validation = activityinfo_schema.validate(req.body);
+    if (validation.error) throw new Error(validation.error);
+
+    let img_path = 'public/src/default.png';
+    let img_id = 1;
+
+    if (req.file) {
+      img_path = req.file.path;
+      const imgInfo = await image_utils.saveImg(req);
+
+      // 保存图片信息到数据库
+      const [imgResult] = await db.query('INSERT INTO img_info SET ?', {
+        path: img_path,
         size: imgInfo.info.size,
         blur: imgInfo.blurl,
         base64: imgInfo.base64url,
-        width: imgInfo.info.width, 
+        width: imgInfo.info.width,
         height: imgInfo.info.height,
-      }, function (err, results) {
-          if (err){
-            return res.cc(err)
-          } 
-          if (results.affectedRows !== 1) {
-            return res.cc("插入数据库img_info失败!")
-          }
-          if (err) return res.cc(err)
-          const sql = 'insert into activity_info set ?'
-          db.query(sql, { 
-            title: req.body.title, 
-            date: req.body.date, 
-            detail: req.body.detail,
-            img_id: results.insertId,
-          }, function (err, results) {
-              if (err){
-                return res.cc(err)
-              } 
-              if (results.affectedRows !== 1) {
-                return res.cc("插入数据库activity_info失败!")
-              }
-              return res.cc('上传成功!', true)
-          })
-        })
-      }
-  }
+      });
+      if (!imgResult.affectedRows) throw new Error('插入数据库img_info失败');
+      img_id = imgResult.insertId;
+    }
 
+    // 保存活动信息到数据库
+    const [activityResult] = await db.query('INSERT INTO activity_info SET ?', {
+      title: req.body.title,
+      date: req.body.date,
+      detail: req.body.detail,
+      img_id,
+    });
+    if (!activityResult.affectedRows) throw new Error('插入数据库activity_info失败');
+
+    res.cc('上传成功!', true);
+  } catch (err) {
+    res.cc(err.message);
+  }
+};
+
+// 删除活动信息
 exports.delete = async (req, res) => {
-const sqly = `select * from img_info, activity_info where (img_info.id = activity_info.img_id and activity_info.id = ?)`
-await db.query(sqly, req.body.id, function(err, results) {
-    //console.log(results[0])
-    if (err) return res.cc(err)
-    if(!results[0]) return res.cc("没有可删除记录")
-    if(results[0].img_id == 1){
-    const sql = `delete from activity_info WHERE id=?`
-        db.query(sql, [req.body.id],function(err, results2) {
-        if (err) return res.cc(err)
-        return res.cc('删除成功!', true)
-        })
-    }else
-    {
-    fs.unlink(results[0].path,function(error){
-        if(error) res.cc(error)
-    })
-    const sql = `delete from img_info WHERE id=?`
-    db.query(sql, [results[0].img_id],function(err, results1) {
-        if (err) return res.cc(err)
-        const sql = `delete from activity_info WHERE id=?`
-        db.query(sql, [req.body.id],function(err, results2) {
-        if (err) return res.cc(err)
-        return res.cc('删除成功!', true)
-        })
-    })
-    }
-})
-}
+  try {
+    const [[result]] = await db.query('SELECT * FROM img_info, activity_info WHERE img_info.id = activity_info.img_id AND activity_info.id = ?', [req.body.id]);
+    if (!result) throw new Error('没有可删除记录');
 
-exports.update = async (req, res) => {
-    // 不更新图片的情况
-    if(!req.file){
-      const sql = `UPDATE activity_info SET ? WHERE id = ?`
-      db.query(sql, [{ 
-        title: req.body.title, 
-        date: req.body.date, 
-        detail: req.body.detail
-    }, req.body.id], function (err, results) {
-      if (err){
-        return res.cc(err)
-      } 
-      if (results.affectedRows !== 1) {
-        return res.cc("插入数据库activity_info失败!")
-      }
-      return res.cc('更新成功!', true)
-      })
-    }else{
-    // 更新图片的情况
-      try {
-        const validation = await activityinfo_schema.validate(req.body)
-        if(validation.error){
-          fs.unlink(req.file.path,function(err){
-            if(err){
-              return res.cc(err)
-            }
-          })
-          return res.cc(validation.error)
-        }
-      } catch (err) {
-        return res.cc(err)
-      }
-    
-      const sqly = `select * from img_info, activity_info where (img_info.id = activity_info.img_id and activity_info.id = ?)`
-      await db.query(sqly, req.body.id, function(err, results) {
-        //console.log(results[0])
-        if (err) return res.cc(err)
-        if(!results[0]) {
-          fs.unlink(req.file.path,function(err){
-            if(err){
-              return res.cc(err)
-            }
-          })
-          return res.cc("没有可删除记录")
-        }
-  
-        if(results[0].img_id == 1){
-          results[0].img_id = 0
-        }
-        else {
-          fs.unlink(results[0].path,function(error){
-            if(error){
-              return res.cc(error)
-            }
-          })
-        }
-        const sql = `delete from img_info WHERE id=?`
-        
-        db.query(sql, [results[0].img_id],async function(err, results1) {
-          if (err) return res.cc(err)
-          
-  
-          try {
-            const validation = await activityinfo_schema.validate(req.body)
-            if(validation.error){
-              fs.unlink(req.file.path,function(error){
-                if(error){
-                  return res.cc(error)
-                }
-              })
-              return res.cc(validation.error)
-            }
-          } catch (err) {
-            return res.cc(err)
-          }
-  
-          const imgInfo = await image_utils.saveImg(req)
-  
-          const sql = 'insert into img_info set ?'
-          db.query(sql, { 
-            path: req.file.path, 
-            size: imgInfo.info.size,
-            blur: imgInfo.blurl,
-            base64: imgInfo.base64url,
-            width: imgInfo.info.width, 
-            height: imgInfo.info.height}, function (err, results) {
-              if (err){
-                return res.cc(err)
-              } 
-              if (results.affectedRows !== 1) {
-                return res.cc("插入数据库img_info失败!更新失败!")
-              }
-              if (err) return res.cc(err)
-              const sql = `UPDATE activity_info SET ? WHERE id = ?`
-              db.query(sql, [{ 
-                title: req.body.title, 
-                date: req.body.date, 
-                detail: req.body.detail,
-                img_id: results.insertId,
-              }, req.body.id], function (err, results) {
-                  if (err){
-                    return res.cc(err)
-                  } 
-                  if (results.affectedRows !== 1) {
-                    return res.cc("更新数据库activity_info失败!")
-                  }
-                  return res.cc('更新成功!', true)
-              })
-          })
-  
-        })
-      })  
+    if (result.img_id !== 1) {
+      // 删除物理文件
+      fs.unlinkSync(result.path);
+
+      // 删除图片信息
+      await db.query('DELETE FROM img_info WHERE id=?', [result.img_id]);
     }
-    
+
+    // 删除活动信息
+    await db.query('DELETE FROM activity_info WHERE id=?', [req.body.id]);
+
+    res.cc('删除成功!', true);
+  } catch (err) {
+    res.cc(err.message);
   }
+};
+
+// 更新活动信息
+exports.update = async (req, res) => {
+  try {
+    const validation = activityinfo_schema.validate(req.body);
+    if (validation.error) throw new Error(validation.error);
+
+    if (req.file) {
+      const imgInfo = await image_utils.saveImg(req);
+
+      // 更新图片信息
+      await db.query('UPDATE img_info SET ? WHERE id = ?', [{
+        path: req.file.path,
+        size: imgInfo.info.size,
+        blur: imgInfo.blurl,
+        base64: imgInfo.base64url,
+        width: imgInfo.info.width,
+        height: imgInfo.info.height,
+      }, req.body.id]);
+    }
+
+    // 更新活动信息
+    await db.query('UPDATE activity_info SET ? WHERE id = ?', [{
+      title: req.body.title,
+      date: req.body.date,
+      detail: req.body.detail,
+    }, req.body.id]);
+
+    res.cc('更新成功!', true);
+  } catch (err) {
+    res.cc(err.message);
+  }
+};
