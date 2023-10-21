@@ -5,6 +5,8 @@ var { expressjwt: jwt } = require("express-jwt");
 
 router.use('/api', require('./api/commonapi'));
 
+router.use('/signup', require('./v1/signupapi'));
+
 router.use('/competition', require('./api/competition-info'))
 
 router.use('/activity', require('./api/activityinfo'))
